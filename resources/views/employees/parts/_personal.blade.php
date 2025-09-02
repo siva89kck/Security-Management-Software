@@ -80,12 +80,13 @@
                 <option value="Widow" {{ old('marital_status', $employee->marital_status ?? '')=='Widow' ? 'selected' : '' }}>Widow</option>
                 <option value="Divorce" {{ old('marital_status', $employee->marital_status ?? '')=='Divorce' ? 'selected' : '' }}>Divorce</option>
             </select>
-            <div class="invalid-feedback">Please marital status.</div>
+            <div class="invalid-feedback">Please select marital status.</div>
         </div>
         <div class="col-md-6">
             <label class="form-label">Mobile <span class="text-danger">*</span></label>
             <input type="text" name="mobile" class="form-control"
                    value="{{ old('mobile', $employee->mobile ?? '') }}" required>
+                   <div class="invalid-feedback">Please enter mobile number.</div>
         </div>
         <div class="col-md-6">
             <label class="form-label">Alt Mobile</label>

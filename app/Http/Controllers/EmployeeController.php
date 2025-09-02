@@ -25,6 +25,20 @@ class EmployeeController extends Controller
         return view('employees.index', compact('employees'));
     }
 
+    public function toggleStatus($id)
+{
+    $employee = Employee::findOrFail($id);
+
+    $employee->status = $employee->status === 'active' ? 'inactive' : 'active';
+    $employee->save();
+
+    return response()->json([
+        'success' => true,
+        'status' => $employee->status
+    ]);
+}
+
+
     public function create()
     {
         return view('employees.create');

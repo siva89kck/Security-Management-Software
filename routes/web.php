@@ -16,6 +16,9 @@ Route::delete('employees/{employee}', [EmployeeController::class, 'destroy'])->n
 Route::post('employees/{id}/restore', [EmployeeController::class, 'restore'])->name('employees.restore');
 Route::delete('employees/{id}/force-delete', [EmployeeController::class, 'forceDelete'])->name('employees.forceDelete');
 
+Route::patch('/employees/{id}/toggle-status', [EmployeeController::class, 'toggleStatus'])
+     ->name('employees.toggleStatus');
+
 
 
 Route::get('/dashboard', function () {

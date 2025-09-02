@@ -59,18 +59,37 @@
             <tbody>
               @foreach($employees as $e)
               <tr>
-                <td>{{ $e->employee_code }}</td>
+                <td><a href="{{ route('employees.show', $e) }}"  title="View">
+                    {{ $e->employee_code }}
+                  </a></td>
                 <td>{{ $e->first_name }} {{ $e->last_name }}</td>
                 <td>{{ $e->officialDetail->role ?? '-' }}</td>
                 <td>{{ $e->mobile ?? $e->phone }}</td>
                 <td>{{ optional($e->addresses->first())->city ?? '-' }}</td>
-                <td>
+                {{-- <td>
                 @if($e->status == 'active')
-                    <button class="btn btn-success btn-sm w-100">Active</button>
+                    <form action="{{ route('employees.toggleStatus', $e->id) }}" method="POST" class="d-inline">
+                        @csrf
+                        @method('PATCH')
+                        <button type="submit" class="btn btn-success btn-sm w-100" title="Click to Inactive">Active</button>
+                    </form>
                 @else
-                    <button class="btn btn-danger btn-sm w-100">Inactive</button>
+                    <form action="{{ route('employees.toggleStatus', $e->id) }}" method="POST" class="d-inline">
+                        @csrf
+                        @method('PATCH')
+                        <button type="submit" class="btn btn-danger btn-sm w-100" title="Click to Active">Inactive</button>
+                    </form>
                 @endif
-                </td>
+
+                </td> --}}
+                <td>
+    <button
+        class="btn btn-sm status-btn w-100 {{ $e->status == 'active' ? 'btn-success' : 'btn-danger' }}"
+        data-id="{{ $e->id }}">
+        {{ ucfirst($e->status) }}
+    </button>
+</td>
+
                 <td class="text-center">
                   <a href="{{ route('employees.show', $e) }}" class="btn btn-light-info icon-btn b-r-4" title="View">
                     <i class="ti ti-eye text-info"></i>
@@ -86,6 +105,7 @@
                       <i class="ti ti-trash"></i>
                     </button>
                   </form>
+
                 </td>
               </tr>
               @endforeach
@@ -107,3 +127,53 @@
   });
 </script>
 @endsection
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".status-btn").forEach(button => {
+        button.addEventListener("click", function () {
+            let id = this.dataset.id;
+            let btn = this;
+
+            fetch(`/employees/${id}/toggle-status`, {
+                method: "PATCH",
+                headers: {
+                    "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                    "Content-Type": "application/json"
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    if (data.status === "active") {
+                        btn.classList.remove("btn-danger");
+                        btn.classList.add("btn-success");
+                        btn.textContent = "Active";
+
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Employee Activated',
+                            showConfirmButton: false,
+                            timer: 2000
+                        });
+                    } else {
+                        btn.classList.remove("btn-success");
+                        btn.classList.add("btn-danger");
+                        btn.textContent = "Inactive";
+
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'warning',
+                            title: 'Employee Deactivated',
+                            showConfirmButton: false,
+                            timer: 2000
+                        });
+                    }
+                }
+            });
+        });
+    });
+});
+</script>

@@ -66,6 +66,10 @@
 <!-- Responsive css -->
 <link rel="stylesheet" href="{{ asset('assets/css/responsive.css') }}">
 
+<!-- list page inactive active js code -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
 
 </head>
 
