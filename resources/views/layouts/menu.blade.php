@@ -39,9 +39,12 @@
               {{-- <span class="badge text-bg-success badge-notification ms-2">2</span> --}}
             </a>
             <ul class="collapse" id="uni-management">
-              <li><a href="#">Uniform List</a></li>
-              <li><a href="#">Stock Management</a></li>
-              <li><a href="#">Add Stock</a></li>
+              <li><a href="{{url('/uniforms/masters')}}">Uniform List</a></li>
+              <li><a href="{{url('/uniforms/masters/create/')}}">Add Uniform</a></li>
+              <li><a href="{{url('/uniforms/purchases/')}}">Stock Management</a></li>
+              <li><a href="{{url('/uniforms/purchases/create/')}}">Add Stock</a></li>
+              <li><a href="{{url('/uniforms/issues/')}}">Uniform Issues List</a></li>
+              <li><a href="{{url('/uniforms/issues/create/')}}">Add Uniform Issues </a></li>
             </ul>
           </li>
           <li class="no-sub">

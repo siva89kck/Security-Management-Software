@@ -5,7 +5,7 @@
     <div class="row m-1">
         <div class="col-12 d-flex justify-content-between align-items-center">
             <div>
-                <h4 class="main-title">Employees List</h4>
+                <h4 class="main-title">Stock List</h4>
                 <ul class="app-line-breadcrumbs mb-3">
                     <li>
                         <a href="{{ route('dashboard') }}" class="f-s-14 f-w-500">
@@ -15,15 +15,15 @@
                         </a>
                     </li>
                     <li class="active">
-                        <a href="#" class="f-s-14 f-w-500">Employees List</a>
+                        <a href="#" class="f-s-14 f-w-500">Stock List</a>
                     </li>
                 </ul>
             </div>
 
-            <!-- Add Employee Button -->
+            <!-- Add Purchase Button -->
             <div>
-                <a href="{{ route('employees.create') }}" class="btn btn-primary">
-                    <i class="ti ti-plus"></i> Add Employee
+                <a href="{{ route('purchases.create') }}" class="btn btn-primary">
+                    <i class="ti ti-plus"></i> Add Stock
                 </a>
             </div>
         </div>
@@ -43,57 +43,52 @@
             <div class="card">
                 <div class="card-body p-0">
                     <div class="app-datatable-default overflow-auto">
-                        <table id="employees-table" class="display app-data-table default-data-table table-sm align-middle">
+                        <table id="purchase-table" class="display app-data-table default-data-table table-sm align-middle">
                             <thead>
                                 <tr>
-                                    {{-- <th>#</th> --}}
-                                    <th>Employee Code</th>
-                                    <th>Name</th>
-                                    <th>Role</th>
-                                    <th>Phone</th>
-                                    <th>Present City</th>
-                                    <th>Status</th>
+
+                                    {{-- <th>Uniform Name</th> --}}
+                                    <th>Purchase Number</th>
+                                    <th>Purchase Date</th>
+                                    <th>Supplier Name</th>
+                                    {{-- <th>Total</th>
+                                    <th>Status</th> --}}
                                     <th class="text-center">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($employees as $e)
+                                @foreach ($purchases as $purchase)
                                     <tr>
-                                        <td><a href="{{ route('employees.show', $e) }}" title="View" style="color: blue; text-decoration:underline">
-                                                {{ $e->employee_code }}
-                                            </a></td>
-                                        <td>{{ $e->first_name }} {{ $e->last_name }}</td>
-                                        <td>{{ $e->officialDetail->role ?? '-' }}</td>
-                                        <td>{{ $e->mobile ?? $e->phone }}</td>
-                                        <td>{{ optional($e->addresses->first())->city ?? '-' }}</td>
-                                        <td>
+                                        {{-- <td>{{ optional($purchase->uniform)->name }}</td> --}}
+                                        <td><a href="{{ route('purchases.show', $purchase) }}" title="View" class="primary">
+                                            {{ $purchase->purchase_number }}</a></td>
+                                        <td>{{ $purchase->purchase_date }}</td>
+                                        <td>{{ $purchase->supplier_name }}</td>
+                                        {{-- <td>{{ $purchase->total }}</td> --}}
+                                        {{-- <td>
                                             <button
-                                                class="btn btn-sm status-btn w-100 {{ $e->status == 'active' ? 'btn-success' : 'btn-danger' }}"
-                                                data-id="{{ $e->id }}">
-                                                {{ ucfirst($e->status) }}
+                                                class="btn btn-sm status-btn w-100 {{ $purchase->status == 'active' ? 'btn-success' : 'btn-danger' }}"
+                                                data-id="{{ $purchase->id }}">
+                                                {{ ucfirst($purchase->status) }}
                                             </button>
-                                        </td>
-
+                                        </td> --}}
                                         <td class="text-center">
-                                            <a href="{{ route('employees.show', $e) }}"
+                                            <a href="{{ route('purchases.show', $purchase) }}"
                                                 class="btn btn-light-info icon-btn b-r-4" title="View">
                                                 <i class="ti ti-eye text-info"></i>
                                             </a>
-                                            <a href="{{ route('employees.edit', $e) }}"
+                                            <a href="{{ route('purchases.edit', $purchase) }}"
                                                 class="btn btn-light-success icon-btn b-r-4" title="Edit">
                                                 <i class="ti ti-edit text-success"></i>
                                             </a>
-                                            <form action="{{ route('employees.destroy', $e) }}" method="POST"
-                                                class="d-inline"
-                                                onsubmit="return confirm('Are you sure you want to delete this employee?');">
+                                            <form action="{{ route('purchases.destroy', $purchase) }}" method="POST" class="d-inline"
+                                                onsubmit="return confirm('Are you sure you want to delete this purchase?');">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-light-danger icon-btn b-r-4"
-                                                    title="Delete">
+                                                <button type="submit" class="btn btn-light-danger icon-btn b-r-4" title="Delete">
                                                     <i class="ti ti-trash"></i>
                                                 </button>
                                             </form>
-
                                         </td>
                                     </tr>
                                 @endforeach
@@ -101,7 +96,7 @@
                         </table>
                     </div>
                     <div class="p-2">
-                        {{ $employees->links() }}
+                        {{ $purchases->links() }}
                     </div>
                 </div>
             </div>
@@ -111,10 +106,11 @@
     <!-- Initialize DataTable -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            new DataTable('#employees-table');
+            new DataTable('#purchase-table');
         });
     </script>
 @endsection
+
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         document.querySelectorAll(".status-btn").forEach(button => {
@@ -122,7 +118,7 @@
                 let id = this.dataset.id;
                 let btn = this;
 
-                fetch(`/employees/${id}/toggle-status`, {
+                fetch(`/purchases/${id}/toggle-status`, {
                         method: "PATCH",
                         headers: {
                             "X-CSRF-TOKEN": "{{ csrf_token() }}",
@@ -141,7 +137,7 @@
                                     toast: true,
                                     position: 'top-end',
                                     icon: 'success',
-                                    title: 'Employee Activated',
+                                    title: 'Purchase Activated',
                                     showConfirmButton: false,
                                     timer: 2000
                                 });
@@ -154,7 +150,7 @@
                                     toast: true,
                                     position: 'top-end',
                                     icon: 'warning',
-                                    title: 'Employee Deactivated',
+                                    title: 'Purchase Deactivated',
                                     showConfirmButton: false,
                                     timer: 2000
                                 });
