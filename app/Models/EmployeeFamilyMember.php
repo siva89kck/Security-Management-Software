@@ -8,7 +8,7 @@ class EmployeeFamilyMember extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['employee_id','name','dob','relationship','marital_status','mobile_number'];
+    protected $fillable = ['employee_id','name','dob','age','relationship','marital_status','mobile_number'];
 
     protected $casts = ['dob' => 'date'];
 

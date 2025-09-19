@@ -46,7 +46,6 @@
                         <table id="employees-table" class="display app-data-table default-data-table table-sm align-middle">
                             <thead>
                                 <tr>
-                                    {{-- <th>#</th> --}}
                                     <th>Employee Code</th>
                                     <th>Name</th>
                                     <th>Role</th>
@@ -59,9 +58,11 @@
                             <tbody>
                                 @foreach ($employees as $e)
                                     <tr>
-                                        <td><a href="{{ route('employees.show', $e) }}" title="View" style="color: blue; text-decoration:underline">
+                                        <td>
+                                            <a href="{{ route('employees.show', $e) }}" title="View" class="text-primary text-decoration-underline">
                                                 {{ $e->employee_code }}
-                                            </a></td>
+                                            </a>
+                                        </td>
                                         <td>{{ $e->first_name }} {{ $e->last_name }}</td>
                                         <td>{{ $e->officialDetail->role ?? '-' }}</td>
                                         <td>{{ $e->mobile ?? $e->phone }}</td>
@@ -73,7 +74,6 @@
                                                 {{ ucfirst($e->status) }}
                                             </button>
                                         </td>
-
                                         <td class="text-center">
                                             <a href="{{ route('employees.show', $e) }}"
                                                 class="btn btn-light-info icon-btn b-r-4" title="View">
@@ -93,7 +93,6 @@
                                                     <i class="ti ti-trash"></i>
                                                 </button>
                                             </form>
-
                                         </td>
                                     </tr>
                                 @endforeach
@@ -108,60 +107,101 @@
         </div>
     </div>
 
-    <!-- Initialize DataTable -->
+    <!-- Initialize DataTable with Export Buttons -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            new DataTable('#employees-table');
+            $('#employees-table').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        title: 'Employees List',
+                        className: 'btn btn-success btn-sm'
+                    },
+                    // {
+                    //     extend: 'csvHtml5',
+                    //     title: 'Employees_List',
+                    //     className: 'btn btn-info btn-sm'
+                    // },
+                    // {
+                    //     extend: 'pdfHtml5',
+                    //     title: 'Employees_List',
+                    //     className: 'btn btn-danger btn-sm',
+                    //     orientation: 'landscape',
+                    //     pageSize: 'A4'
+                    // },
+                    // {
+                    //     extend: 'print',
+                    //     title: 'Employees List',
+                    //     className: 'btn btn-primary btn-sm'
+                    // }
+                ]
+            });
         });
     </script>
 @endsection
+
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        document.querySelectorAll(".status-btn").forEach(button => {
-            button.addEventListener("click", function() {
-                let id = this.dataset.id;
-                let btn = this;
+document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll(".status-btn").forEach(button => {
+        button.addEventListener("click", function() {
+            let id = this.dataset.id;
+            let btn = this;
+            let currentStatus = btn.textContent.trim().toLowerCase(); // active / inactive
 
-                fetch(`/employees/${id}/toggle-status`, {
-                        method: "PATCH",
-                        headers: {
-                            "X-CSRF-TOKEN": "{{ csrf_token() }}",
-                            "Content-Type": "application/json"
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            if (data.status === "active") {
-                                btn.classList.remove("btn-danger");
-                                btn.classList.add("btn-success");
-                                btn.textContent = "Active";
-
-                                Swal.fire({
-                                    toast: true,
-                                    position: 'top-end',
-                                    icon: 'success',
-                                    title: 'Employee Activated',
-                                    showConfirmButton: false,
-                                    timer: 2000
-                                });
-                            } else {
-                                btn.classList.remove("btn-success");
-                                btn.classList.add("btn-danger");
-                                btn.textContent = "Inactive";
-
-                                Swal.fire({
-                                    toast: true,
-                                    position: 'top-end',
-                                    icon: 'warning',
-                                    title: 'Employee Deactivated',
-                                    showConfirmButton: false,
-                                    timer: 2000
-                                });
+            // Confirmation popup
+            Swal.fire({
+                title: currentStatus === 'active' ? 'Make Inactive?' : 'Make Active?',
+                text: `Are you sure you want to change this employee status to ${currentStatus === 'active' ? 'Inactive' : 'Active'}?`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, change it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Only if user confirmed → send request
+                    fetch(`/employees/${id}/toggle-status`, {
+                            method: "PATCH",
+                            headers: {
+                                "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                                "Content-Type": "application/json"
                             }
-                        }
-                    });
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                if (data.status === "active") {
+                                    btn.classList.remove("btn-danger");
+                                    btn.classList.add("btn-success");
+                                    btn.textContent = "Active";
+                                    Swal.fire({
+                                        toast: true,
+                                        position: 'top-end',
+                                        icon: 'success',
+                                        title: 'Employee Activated',
+                                        showConfirmButton: false,
+                                        timer: 2000
+                                    });
+                                } else {
+                                    btn.classList.remove("btn-success");
+                                    btn.classList.add("btn-danger");
+                                    btn.textContent = "Inactive";
+                                    Swal.fire({
+                                        toast: true,
+                                        position: 'top-end',
+                                        icon: 'warning',
+                                        title: 'Employee Deactivated',
+                                        showConfirmButton: false,
+                                        timer: 2000
+                                    });
+                                }
+                            }
+                        });
+                }
             });
         });
     });
+});
 </script>
+

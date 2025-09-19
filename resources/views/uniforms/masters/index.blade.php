@@ -59,7 +59,11 @@
                                 @foreach ($masters as $m)
                                     <tr>
                                         {{-- <td>{{ $m->id }}</td> --}}
-                                        <td>{{ $m->name }}</td>
+                                        <td>
+                                        <a href="{{ route('masters.show', $m) }}"
+                                        class="text-primary text-decoration-underline" title="View">
+                                        {{ $m->name }}</a>
+                                       </td>
                                         <td>{{ $m->size }}</td>
                                         <td>{{ $m->price }}</td>
                                         <td>{{ optional($m->stock)->remaining_stock ?? 0 }}</td>

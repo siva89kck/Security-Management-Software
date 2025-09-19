@@ -10,8 +10,8 @@ class EmployeeUpdateRequest extends FormRequest
     public function rules(): array
 {
     return [
-        'first_name' => ['nullable','string','max:255'],   // required நீக்கப்பட்டது
-        'last_name'  => ['nullable','string','max:255'],   // required நீக்கப்பட்டது
+        'first_name' => ['nullable','string','max:255'],   // required removed
+        'last_name'  => ['nullable','string','max:255'],   // required removed
         'dob'        => ['nullable','date'],
         'gender'     => ['nullable','in:male,female,other'],
         'age'        => ['nullable','integer','min:0','max:120'],
@@ -28,23 +28,23 @@ class EmployeeUpdateRequest extends FormRequest
         'addresses.present.pincode'         => ['nullable','string','max:20'],
 
         'languages'              => ['nullable','array'],
-        'languages.*.language'   => ['nullable','string','max:100'], // required_with நீக்கப்பட்டது
+        'languages.*.language'   => ['nullable','string','max:100'], // required_with removed
         'languages.*.read'       => ['nullable','boolean'],
         'languages.*.write'      => ['nullable','boolean'],
         'languages.*.speak'      => ['nullable','boolean'],
 
         'family_members'               => ['nullable','array'],
-        'family_members.*.name'        => ['nullable','string'], // required_with நீக்கப்பட்டது
+        'family_members.*.name'        => ['nullable','string'], // required_with removed
         'family_members.*.dob'         => ['nullable','date'],
         'family_members.*.relationship'=> ['nullable','string','max:100'],
         'family_members.*.marital_status'=> ['nullable','string','max:100'],
 
         'experiences'                => ['nullable','array'],
-        'experiences.*.company_name' => ['nullable','string'], // required_with நீக்கப்பட்டது
-        'experiences.*.designation'  => ['nullable','string'], // required_with நீக்கப்பட்டது
+        'experiences.*.company_name' => ['nullable','string'], // required_with removed
+        'experiences.*.designation'  => ['nullable','string'], // required_with removed
         'experiences.*.experience'   => ['nullable','string','max:50'],
 
-        'official.role'            => ['nullable','in:Security Guard,Admin,Supervisor,Field Officer'],
+        'official.role'            => ['nullable','in:Security Guard(SG),Head Guard(HG),Security Officer(SO),Assistant Security Officer(ASO),House Keeping(HK),Operation Manager(OM),Field Officer(FO),Gardener,MST,Electrician,Office Assistant,Admin Manager,Admin Assistant'],
         'official.date_of_join'    => ['nullable','date'],
         'official.employee_type'   => ['nullable','in:Permanent,Temporary'],
         'official.salary'          => ['nullable','numeric','min:0'],
@@ -65,10 +65,10 @@ class EmployeeUpdateRequest extends FormRequest
         'payslip.other_allowance'  => ['nullable','numeric'],
 
         'banks'                        => ['nullable','array'],
-        'banks.*.account_holder_name'  => ['nullable','string'], // required_with நீக்கப்பட்டது
-        'banks.*.bank_name'            => ['nullable','string'], // required_with நீக்கப்பட்டது
-        'banks.*.account_no'           => ['nullable','string'], // required_with நீக்கப்பட்டது
-        'banks.*.ifsc_code'            => ['nullable','string'], // required_with நீக்கப்பட்டது
+        'banks.*.account_holder_name'  => ['nullable','string'], // required_with removed
+        'banks.*.bank_name'            => ['nullable','string'], // required_with removed
+        'banks.*.account_no'           => ['nullable','string'], // required_with removed
+        'banks.*.ifsc_code'            => ['nullable','string'], // required_with removed
 
         'enclosures'                   => ['nullable','array'],
         'enclosures.*.document_type'   => ['nullable','in:PAN CARD,AADHAR CARD,VOTER ID,RATION CARD,Driving License,SCHOOL CERTIFICATE,DEGREE CERTIFICATE'], // required_with நீக்கப்பட்டது

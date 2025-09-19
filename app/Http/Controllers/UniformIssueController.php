@@ -34,7 +34,7 @@ class UniformIssueController extends Controller
         $issue = \App\Models\UniformIssue::create([
             'employee_id'  => $data['employee_id'],
             'issue_date'   => $data['issue_date'],
-            'issue_number' => $data['issue_number'],
+            // 'issue_number' => $data['issue_number'],
             'remarks'      => $data['remarks'] ?? null,
         ]);
 

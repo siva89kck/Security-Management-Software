@@ -52,6 +52,7 @@
                                     <th>Issue Date</th>
                                     <th>Employee</th>
                                     <th>Total Items</th>
+                                    <th>Grand Total</th>
                                     <th class="text-center">Actions</th>
                                 </tr>
                             </thead>
@@ -59,12 +60,14 @@
                                 @foreach($issues as $p)
                                     <tr>
                                         {{-- <td>{{ $loop->iteration + ($issues->currentPage()-1)*$issues->perPage() }}</td> --}}
-                                        <td>{{ $p->issue_number }}</td>
+                                        <td><a href="{{ route('issues.show',$p) }}"
+                                                class="text-primary text-decoration-underline" title="View">{{ $p->issue_number }}</a></td>
                                         <td>{{ $p->issue_date }}</td>
                                         <td>
                                             {{ optional($p->employee)->first_name ? $p->employee->first_name . ' ' . $p->employee->last_name : '-' }}
                                         </td>
                                         <td>{{ $p->items->count() }}</td>
+                                        <td>{{ $p->items->sum(('total'),2) }}</td>
                                         <td class="text-center">
                                             <a href="{{ route('issues.show',$p) }}"
                                                 class="btn btn-light-info icon-btn b-r-4" title="View">

@@ -7,10 +7,19 @@
             <label class="form-label">Role </label>
             <select name="official[role]" class="form-select" >
                 <option value="">--</option>
-                <option value="Security Guard" {{ old('official.role', $employeeOfficial->role ?? '') == 'Security Guard' ? 'selected' : '' }}>Security Guard</option>
-                <option value="Admin" {{ old('official.role', $employeeOfficial->role ?? '') == 'Admin' ? 'selected' : '' }}>Admin</option>
-                <option value="Supervisor" {{ old('official.role', $employeeOfficial->role ?? '') == 'Supervisor' ? 'selected' : '' }}>Supervisor</option>
-                <option value="Field Officer" {{ old('official.role', $employeeOfficial->role ?? '') == 'Field Officer' ? 'selected' : '' }}>Field Officer</option>
+                <option value="Security Guard(SG)" {{ old('official.role', $employeeOfficial->role ?? '') == 'Security Guard(SG)' ? 'selected' : '' }}>Security Guard(SG)</option>
+                <option value="Head Guard(HG)" {{ old('official.role', $employeeOfficial->role ?? '') == 'Head Guard(HG)' ? 'selected' : '' }}>Head Guard(HG)</option>
+                <option value="Security Officer(SO)" {{ old('official.role', $employeeOfficial->role ?? '') == 'Security Officer(SO)' ? 'selected' : '' }}>Security Officer(SO)</option>
+                <option value="Assistant Security Officer(ASO)" {{ old('official.role', $employeeOfficial->role ?? '') == 'Assistant Security Officer(ASO)' ? 'selected' : '' }}>Assistant Security Officer(ASO)</option>
+                <option value="House Keeping(HK)" {{ old('official.role', $employeeOfficial->role ?? '') == 'House Keeping(HK)' ? 'selected' : '' }}>House Keeping(HK)</option>
+                <option value="Operation Manager(OM)" {{ old('official.role', $employeeOfficial->role ?? '') == 'Operation Manager(OM)' ? 'selected' : '' }}>Operation Manager(OM)</option>
+                <option value="Field Officer(FO)" {{ old('official.role', $employeeOfficial->role ?? '') == 'Field Officer(FO)' ? 'selected' : '' }}>Field Officer(FO)</option>
+                <option value="Gardener" {{ old('official.role', $employeeOfficial->role ?? '') == 'Gardener' ? 'selected' : '' }}>Gardener</option>
+                <option value="MST" {{ old('official.role', $employeeOfficial->role ?? '') == 'MST' ? 'selected' : '' }}>MST</option>
+                <option value="Electrician" {{ old('official.role', $employeeOfficial->role ?? '') == 'Electrician' ? 'selected' : '' }}>Electrician</option>
+                <option value="Office Assistant" {{ old('official.role', $employeeOfficial->role ?? '') == 'Office Assistant' ? 'selected' : '' }}>Office Assistant</option>
+                <option value="Admin Manager" {{ old('official.role', $employeeOfficial->role ?? '') == 'Admin Manager' ? 'selected' : '' }}>Admin Manager</option>
+                <option value="Admin Assistant" {{ old('official.role', $employeeOfficial->role ?? '') == 'Admin Assistant' ? 'selected' : '' }}>Admin Assistant</option>
             </select>
             <div class="invalid-feedback">Please select a role.</div>
         </div>
@@ -118,6 +127,7 @@
 </style>
 
 <script>
+
 // Bootstrap validation
 // document.addEventListener("DOMContentLoaded", function () {
 //     const form = document.querySelector("#employeeForm");

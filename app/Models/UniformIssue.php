@@ -18,4 +18,20 @@ class UniformIssue extends Model
     public function employee(){
         return $this->belongsTo(\App\Models\Employee::class, 'employee_id');
     }
+
+    // ✅ auto issue_number generate
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            // Issue Number → only numbers (YmdHis)
+            $model->issue_number = now()->format('YmdHis'); // 20250918235847
+
+            // Issue Date auto fill (optional)
+            if (empty($model->issue_date)) {
+                $model->issue_date = now();
+            }
+        });
+    }
 }

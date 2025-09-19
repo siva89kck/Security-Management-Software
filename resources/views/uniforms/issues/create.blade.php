@@ -79,13 +79,13 @@
                             <div class="invalid-feedback">Please enter date</div>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    {{-- <div class="col-md-3">
                         <div class="detail-card">
                             <label class="label">Issue No <span class="text-danger">*</span></label>
                             <input type="text" name="issue_number" value="{{ old('issue_number') }}" class="form-control" required>
                             <div class="invalid-feedback">Please enter issue number</div>
                         </div>
-                    </div>
+                    </div> --}}
                     <div class="col-md-3">
                         <div class="detail-card">
                             <label class="label">Employee <span class="text-danger">*</span></label>
@@ -135,7 +135,7 @@
     const masters = @json($masters);
     let rowIndex = 0;
 
-    // புதிய row உருவாக்கும் function
+    // new row make function
     function newRow(idx){
         const defaultItem = masters[0]; // default select first item
         const tr = document.createElement('tr');

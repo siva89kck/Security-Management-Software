@@ -369,8 +369,16 @@
                                                         <div class="value">{{ $member->dob ? \Carbon\Carbon::parse($member->dob)->format('d-m-Y') : '-' }}</div>
                                                     </div>
                                                     <div class="col-md-4 mb-2">
+                                                        <div class="label">Age</div>
+                                                        <div class="value">{{ $member->age ?? '-' }}</div>
+                                                    </div>
+                                                    <div class="col-md-4 mb-2">
                                                         <div class="label">Relationship</div>
                                                         <div class="value">{{ $member->relationship ?? '-' }}</div>
+                                                    </div>
+                                                    <div class="col-md-4 mb-2">
+                                                        <div class="label">Mobile Number</div>
+                                                        <div class="value">{{ $member->mobile_number ?? '-' }}</div>
                                                     </div>
                                                 </div>
                                             </div>

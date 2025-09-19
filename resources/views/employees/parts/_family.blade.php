@@ -8,6 +8,7 @@
                 return [
                     'name' => $m->name,
                     'dob'  => $m->dob ? \Carbon\Carbon::parse($m->dob)->format('Y-m-d') : '',
+                    'age' => $m->age,
                     'relationship' => $m->relationship,
                     'marital_status'=> $m->marital_status,
                     'mobile_number' => $m->mobile_number ?? '',
@@ -17,7 +18,7 @@
 
         // ✅ Always ensure at least one empty row
         if (empty($familyMembers)) {
-            $familyMembers = [['name'=>'','dob'=>'','relationship'=>'','marital_status'=>'','mobile_number'=>'']];
+            $familyMembers = [['name'=>'','dob'=>'','age'=>'','relationship'=>'','marital_status'=>'','mobile_number'=>'']];
         }
     @endphp
 
@@ -30,7 +31,12 @@
 
             <div class="col-md-6">
                 <label class="form-label">DOB</label>
-                <input type="date" name="family_members[{{ $i }}][dob]" value="{{ $member['dob'] ?? '' }}" class="form-control" >
+                <input type="date" name="family_members[{{ $i }}][dob]" value="{{ $member['dob'] ?? '' }}" class="form-control dob-field">
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Age</label>
+                <input type="number" name="family_members[{{ $i }}][age]" value="{{ $member['age'] ?? '' }}" class="form-control age-field">
             </div>
 
             <div class="col-md-6">
@@ -77,7 +83,11 @@
         </div>
         <div class="col-md-6">
             <label class="form-label">DOB</label>
-            <input type="date" name="family_members[__INDEX__][dob]" class="form-control" >
+            <input type="date" name="family_members[__INDEX__][dob]" class="form-control dob-field">
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Age</label>
+            <input type="number" name="family_members[__INDEX__][age]" class="form-control age-field">
         </div>
         <div class="col-md-6">
             <label class="form-label">Relationship</label>
@@ -145,22 +155,44 @@
 </style>
 
 <script>
-document.addEventListener('click', function(e) {
-  // Add new family member row
-  if (e.target.classList.contains('add-family-row')) {
-    const repeater = document.querySelector(e.target.dataset.target);
-    const template = document.querySelector('#familyTemplate').innerHTML;
-    const index = repeater.querySelectorAll('.repeater-item').length;
-    const newRow = template.replace(/__INDEX__/g, index);
-    repeater.insertAdjacentHTML('beforeend', newRow);
-    return;
-  }
+document.addEventListener('DOMContentLoaded', function () {
+    // Event delegation: listen for change on any DOB field inside #familyRepeater
+    document.getElementById('familyRepeater').addEventListener('change', function (e) {
+        if (e.target.classList.contains('dob-field')) {
+            const dobInput = e.target;
+            const ageInput = dobInput
+                .closest('.repeater-item')
+                .querySelector('.age-field');
 
-  // Remove row handler
-  if (e.target.classList.contains('family-remove-row')) {
-    const item = e.target.closest('.repeater-item');
-    if (item) item.remove();
-    return;
-  }
+            const dob = new Date(dobInput.value);
+            if (!isNaN(dob)) {
+                const diff = new Date(Date.now() - dob.getTime());
+                const age = Math.abs(diff.getUTCFullYear() - 1970);
+                ageInput.value = age;
+            } else {
+                ageInput.value = '';
+            }
+        }
+    });
+});
+
+// Add/Remove row handlers
+document.addEventListener('click', function(e) {
+    // Add new family member row
+    if (e.target.classList.contains('add-family-row')) {
+        const repeater = document.querySelector(e.target.dataset.target);
+        const template = document.querySelector('#familyTemplate').innerHTML;
+        const index = repeater.querySelectorAll('.repeater-item').length;
+        const newRow = template.replace(/__INDEX__/g, index);
+        repeater.insertAdjacentHTML('beforeend', newRow);
+        return;
+    }
+
+    // Remove row handler
+    if (e.target.classList.contains('family-remove-row')) {
+        const item = e.target.closest('.repeater-item');
+        if (item) item.remove();
+        return;
+    }
 });
 </script>

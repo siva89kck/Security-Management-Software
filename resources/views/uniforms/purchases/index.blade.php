@@ -60,7 +60,7 @@
                                 @foreach ($purchases as $purchase)
                                     <tr>
                                         {{-- <td>{{ optional($purchase->uniform)->name }}</td> --}}
-                                        <td><a href="{{ route('purchases.show', $purchase) }}" title="View" class="primary">
+                                        <td><a href="{{ route('purchases.show', $purchase) }}" title="View" class="text-primary text-decoration-underline">
                                             {{ $purchase->purchase_number }}</a></td>
                                         <td>{{ $purchase->purchase_date }}</td>
                                         <td>{{ $purchase->supplier_name }}</td>
