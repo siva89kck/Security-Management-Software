@@ -46,7 +46,7 @@ class UniformPurchaseController extends Controller
         });
 
         return redirect()->route('purchases.index')
-            ->with('success','Purchase saved successfully!');
+            ->with('success','Stock saved successfully!');
     } catch (\Throwable $e) {
         return back()->withErrors('Error while saving purchase: '.$e->getMessage())->withInput();
     }
@@ -89,7 +89,7 @@ public function update(StoreUniformPurchaseRequest $r, UniformPurchase $purchase
         });
 
         return redirect()->route('purchases.index')
-            ->with('success','Purchase updated successfully!');
+            ->with('success','Stock updated successfully!');
     } catch (\Throwable $e) {
         return back()->withErrors('Error while updating purchase: '.$e->getMessage())->withInput();
     }

@@ -51,6 +51,7 @@
                                     <th>Issue Number</th>
                                     <th>Issue Date</th>
                                     <th>Employee</th>
+                                    <th>Issued By</th>
                                     <th>Total Items</th>
                                     <th>Grand Total</th>
                                     <th class="text-center">Actions</th>
@@ -65,6 +66,16 @@
                                         <td>{{ $p->issue_date }}</td>
                                         <td>
                                             {{ optional($p->employee)->first_name ? $p->employee->first_name . ' ' . $p->employee->last_name : '-' }}
+                                        </td>
+                                        <td>
+                                        @if(optional($p->issuedBy)->first_name)
+                                            {{ $p->issuedBy->first_name }} {{ $p->issuedBy->last_name }}
+                                            @if(optional($p->issuedBy->officialDetail)->role)
+                                                - {{ $p->issuedBy->officialDetail->role }}
+                                            @endif
+                                        @else
+                                            -
+                                        @endif
                                         </td>
                                         <td>{{ $p->items->count() }}</td>
                                         <td>{{ $p->items->sum(('total'),2) }}</td>

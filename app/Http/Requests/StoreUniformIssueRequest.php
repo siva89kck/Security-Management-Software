@@ -10,6 +10,7 @@ class StoreUniformIssueRequest extends FormRequest
     public function rules(){
         return [
             'employee_id' => 'required|exists:employees,id',
+            'issued_by' => 'required|exists:employees,id',
             'issue_date' => 'required|date',
             // 'issue_number' => 'required|unique:uniform_issues,issue_number',
             'remarks' => 'nullable|string',

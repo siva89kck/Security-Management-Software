@@ -9,7 +9,13 @@ class UniformIssue extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['employee_id','issue_date','issue_number','remarks'];
+    protected $fillable = [
+        'employee_id',
+        'issued_by',
+        'issue_date',
+        'issue_number',
+        'remarks'
+    ];
 
     public function items(){
         return $this->hasMany(UniformIssueItem::class, 'issue_id');
@@ -17,6 +23,10 @@ class UniformIssue extends Model
 
     public function employee(){
         return $this->belongsTo(\App\Models\Employee::class, 'employee_id');
+    }
+
+    public function issuedBy(){
+        return $this->belongsTo(\App\Models\Employee::class, 'issued_by');
     }
 
     // ✅ auto issue_number generate

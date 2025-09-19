@@ -14,4 +14,20 @@ class UniformPurchase extends Model
     public function items(){
         return $this->hasMany(UniformPurchaseItem::class, 'purchase_id');
     }
+
+    // ✅ Auto Purchase Number Generate
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            // Purchase Number → only numbers (YmdHis)
+            $model->purchase_number = now()->format('YmdHis'); // 20250919093012
+
+            // Purchase Date auto fill (optional)
+            if (empty($model->purchase_date)) {
+                $model->purchase_date = now();
+            }
+        });
+    }
 }

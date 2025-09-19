@@ -25,7 +25,7 @@ class StoreUniformPurchaseRequest extends FormRequest
     $purchaseId = $this->route('purchase') ? $this->route('purchase')->id : null;
 
     return [
-        'purchase_number' => 'required|unique:uniform_purchases,purchase_number,' . $purchaseId,
+        'purchase_number' => 'unique:uniform_purchases,purchase_number,' . $purchaseId,
         'purchase_date'   => 'required|date',
         'supplier_name'   => 'required|string|max:255',
         'items.*.uniform_master_id' => 'required|exists:uniform_masters,id',

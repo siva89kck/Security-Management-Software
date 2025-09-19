@@ -6,7 +6,7 @@
         <div class="col-md-6">
             <label class="form-label">Role </label>
             <select name="official[role]" class="form-select" >
-                <option value="">--</option>
+                {{-- <option value="">--</option> --}}
                 <option value="Security Guard(SG)" {{ old('official.role', $employeeOfficial->role ?? '') == 'Security Guard(SG)' ? 'selected' : '' }}>Security Guard(SG)</option>
                 <option value="Head Guard(HG)" {{ old('official.role', $employeeOfficial->role ?? '') == 'Head Guard(HG)' ? 'selected' : '' }}>Head Guard(HG)</option>
                 <option value="Security Officer(SO)" {{ old('official.role', $employeeOfficial->role ?? '') == 'Security Officer(SO)' ? 'selected' : '' }}>Security Officer(SO)</option>

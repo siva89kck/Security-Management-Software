@@ -79,16 +79,16 @@
 
                         <div class="col-md-6">
                             <div class="detail-card">
-                                <label class="label">Size <span class="text-danger">*</span></label>
-                                <input type="text" name="size" class="form-control" value="{{ old('size') }}" required>
+                                <label class="label">Size</label>
+                                <input type="text" name="size" class="form-control" value="{{ old('size') }}">
                                 <div class="invalid-feedback">Please enter size.</div>
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <div class="detail-card">
-                                <label class="label">Price <span class="text-danger">*</span></label>
-                                <input type="number" step="0.01" name="price" class="form-control" value="{{ old('price') }}" required>
+                                <label class="label">Price</label>
+                                <input type="number" step="0.01" name="price" class="form-control" value="{{ old('price') }}">
                                 <div class="invalid-feedback">Please enter price.</div>
                             </div>
                         </div>

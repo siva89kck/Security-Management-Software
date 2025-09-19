@@ -77,28 +77,28 @@
             <div class="card-body">
                 <h5 class="section-title">Add Uniform Stock</h5>
                 <div class="row g-3">
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <div class="detail-card">
                             <label class="label">Purchase Date <span class="text-danger">*</span></label>
                             <input type="date" name="purchase_date" value="{{ old('purchase_date') }}" class="form-control" required>
                             <div class="invalid-feedback">Please enter date</div>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    {{-- <div class="col-md-3">
                         <div class="detail-card">
                             <label class="label">Purchase No <span class="text-danger">*</span></label>
                             <input type="text" name="purchase_number" value="{{ old('purchase_number') }}" class="form-control" required>
                             <div class="invalid-feedback">Please enter purchase number</div>
                         </div>
-                    </div>
-                    <div class="col-md-3">
+                    </div> --}}
+                    <div class="col-md-4">
                         <div class="detail-card">
                             <label class="label">Supplier Name <span class="text-danger">*</span></label>
                             <input type="text" name="supplier_name" value="{{ old('supplier_name') }}" class="form-control" required>
                             <div class="invalid-feedback">Please enter supplier name</div>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <div class="detail-card">
                             <label class="label">Purchase Remarks</label>
                             <input type="text" name="remarks" value="{{ old('remarks') }}" class="form-control">
