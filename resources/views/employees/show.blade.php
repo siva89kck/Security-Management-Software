@@ -420,7 +420,7 @@
                                         <div class="row g-2">
                                             @foreach ([
                                                 'Role' => optional($employee->officialDetail)->role,
-                                                'Date of Join' => optional($employee->officialDetail->date_of_join)?->format('d-m-Y'),
+                                                'Date of Join' => optional($employee->officialDetail?->date_of_join)?->format('d-m-Y'),
                                                 'Employee Type' => optional($employee->officialDetail)->employee_type,
                                                 'Salary' => optional($employee->officialDetail)->salary ? number_format($employee->officialDetail->salary, 2) : '-',
                                                 'PF Number' => optional($employee->officialDetail)->pf_number,
