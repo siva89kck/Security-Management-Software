@@ -10,7 +10,7 @@ class UniformIssueItem extends Model
 
     protected $table = 'uniform_issue_items';
 
-    protected $fillable = ['issue_id','uniform_master_id','quantity','price','total'];
+    protected $fillable = ['issue_id','uniform_master_id','size','quantity','price','total'];
 
     public function issue(){
         return $this->belongsTo(UniformIssue::class, 'issue_id');

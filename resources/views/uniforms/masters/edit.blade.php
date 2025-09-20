@@ -14,11 +14,13 @@
     .detail-card:hover {
         box-shadow: 0 4px 12px rgba(0,0,0,0.12);
     }
-    .detail-card .form-control {
+    .detail-card .form-control,
+    .detail-card .form-select {
         border-radius: 8px;
         transition: border-color 0.3s, box-shadow 0.3s;
     }
-    .detail-card .form-control:focus {
+    .detail-card .form-control:focus,
+    .detail-card .form-select:focus {
         border-color: #0d6efd;
         box-shadow: 0 0 0 0.25rem rgba(13,110,253,.25);
     }
@@ -71,30 +73,43 @@
                     <h5 class="section-title">Edit Uniform Details</h5>
 
                     <div class="row g-3">
+                        <!-- Uniform Name -->
                         <div class="col-md-6">
                             <div class="detail-card">
-                                <label class="label">Name <span class="text-danger">*</span></label>
-                                <input type="text" name="name" class="form-control" value="{{ old('name', $master->name) }}" required>
-                                <div class="invalid-feedback">Please enter name.</div>
+                                <label class="label">Uniform Name <span class="text-danger">*</span></label>
+                                <select name="name" id="uniformType" class="form-select" required>
+                                    <option value="">Select Type</option>
+                                    <option value="Shirt" {{ old('name', $master->name)=='Shirt'?'selected':'' }}>Shirt</option>
+                                    <option value="Pant" {{ old('name', $master->name)=='Pant'?'selected':'' }}>Pant</option>
+                                    <option value="Cap" {{ old('name', $master->name)=='Cap'?'selected':'' }}>Cap</option>
+                                    <option value="Shoes" {{ old('name', $master->name)=='Shoes'?'selected':'' }}>Shoes</option>
+                                </select>
+                                <div class="invalid-feedback">Please select uniform name.</div>
                             </div>
                         </div>
 
+                        <!-- Size Dropdown -->
                         <div class="col-md-6">
                             <div class="detail-card">
-                                <label class="label">Size </label>
-                                <input type="text" name="size" class="form-control" value="{{ old('size', $master->size) }}">
-                                <div class="invalid-feedback">Please enter size.</div>
+                                <label class="label">Size <span class="text-danger">*</span></label>
+                                <select name="size" id="sizeDropdown" class="form-select" required>
+                                    <option value="">Select Size</option>
+                                    {{-- JS will populate --}}
+                                </select>
+                                <div class="invalid-feedback">Please select size.</div>
                             </div>
                         </div>
 
+                        <!-- Price -->
                         <div class="col-md-6">
                             <div class="detail-card">
-                                <label class="label">Price </label>
-                                <input type="number" step="0.01" name="price" class="form-control" value="{{ old('price', $master->price) }}" >
+                                <label class="label">Price</label>
+                                <input type="number" step="0.01" name="price" class="form-control" value="{{ old('price', $master->price) }}">
                                 <div class="invalid-feedback">Please enter price.</div>
                             </div>
                         </div>
 
+                        <!-- Description -->
                         <div class="col-md-6">
                             <div class="detail-card">
                                 <label class="label">Description</label>
@@ -123,11 +138,45 @@ document.addEventListener('DOMContentLoaded', function () {
     Array.from(forms).forEach(function(form) {
         form.addEventListener('submit', function(event) {
             if (!form.checkValidity()) {
-                event.preventDefault(); // stop submit
+                event.preventDefault();
                 event.stopPropagation();
             }
             form.classList.add('was-validated');
         }, false);
+    });
+
+    // size options based on type
+    const sizeOptions = {
+        Shirt: ['XS','S','M','L','XL','XXL'],
+        Pant: ['28','30','32','34','36','38','40'],
+        Cap: ['Small','Medium','Large'],
+        Shoes: ['5','6','7','8','9','10','11']
+    };
+
+    const uniformType = document.getElementById('uniformType');
+    const sizeDropdown = document.getElementById('sizeDropdown');
+
+    function populateSizes(type, selectedSize = null){
+        sizeDropdown.innerHTML = '<option value="">Select Size</option>';
+        if(sizeOptions[type]){
+            sizeOptions[type].forEach(function(size){
+                const opt = document.createElement('option');
+                opt.value = size;
+                opt.textContent = size;
+                if(selectedSize && selectedSize == size) opt.selected = true;
+                sizeDropdown.appendChild(opt);
+            });
+        }
+    }
+
+    // on load, populate size for existing value
+    if(uniformType.value){
+        populateSizes(uniformType.value, "{{ old('size', $master->size) }}");
+    }
+
+    // on change
+    uniformType.addEventListener('change', function(){
+        populateSizes(this.value);
     });
 });
 </script>

@@ -60,8 +60,9 @@
                                 @foreach ($purchases as $purchase)
                                     <tr>
                                         {{-- <td>{{ optional($purchase->uniform)->name }}</td> --}}
-                                        <td><a href="{{ route('purchases.show', $purchase) }}" title="View" class="text-primary text-decoration-underline">
-                                            {{ $purchase->purchase_number }}</a></td>
+                                        <td><a href="{{ route('purchases.show', $purchase) }}" title="View"
+                                                class="text-primary text-decoration-underline">
+                                                {{ $purchase->purchase_number }}</a></td>
                                         <td>{{ $purchase->purchase_date }}</td>
                                         <td>{{ $purchase->supplier_name }}</td>
                                         {{-- <td>{{ $purchase->total }}</td> --}}
@@ -81,14 +82,25 @@
                                                 class="btn btn-light-success icon-btn b-r-4" title="Edit">
                                                 <i class="ti ti-edit text-success"></i>
                                             </a>
-                                            <form action="{{ route('purchases.destroy', $purchase) }}" method="POST" class="d-inline"
-                                                onsubmit="return confirm('Are you sure you want to delete this purchase?');">
+                                            <form action="{{ route('purchases.destroy', $purchase) }}" method="POST"
+                                                class="d-inline delete-form">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-light-danger icon-btn b-r-4" title="Delete">
+                                                <button type="submit" class="btn btn-light-danger icon-btn b-r-4"
+                                                    title="Delete">
                                                     <i class="ti ti-trash"></i>
                                                 </button>
                                             </form>
+                                            {{-- <form action="{{ route('purchases.destroy', $purchase) }}" method="POST"
+                                                class="d-inline"
+                                                onsubmit="return confirm('Are you sure you want to delete this purchase?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-light-danger icon-btn b-r-4"
+                                                    title="Delete">
+                                                    <i class="ti ti-trash"></i>
+                                                </button>
+                                            </form> --}}
                                         </td>
                                     </tr>
                                 @endforeach
@@ -160,4 +172,31 @@
             });
         });
     });
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // DELETE CONFIRMATION ALERT
+    document.querySelectorAll('.delete-form').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault(); // prevent normal submit
+            let formRef = this;
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This will permanently delete the employee record!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // actually submit the form
+                    formRef.submit();
+                }
+            });
+        });
+    });
+});
 </script>

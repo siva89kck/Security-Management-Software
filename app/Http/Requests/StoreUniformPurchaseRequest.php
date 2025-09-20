@@ -31,6 +31,7 @@ class StoreUniformPurchaseRequest extends FormRequest
         'items.*.uniform_master_id' => 'required|exists:uniform_masters,id',
         'items.*.quantity' => 'required|numeric|min:1',
         'items.*.price'    => 'required|numeric|min:0',
+        'items.*.size'     => 'nullable|string|max:50',
     ];
 }
 }

@@ -41,10 +41,9 @@
     .items-table th, .items-table td { vertical-align: middle; }
 </style>
 
-<!-- Page Title & Breadcrumb -->
 <div class="row m-1">
     <div class="col-12">
-        <h4 class="main-title">Stock Details</h4>
+        <h4 class="main-title">{{ isset($purchase) ? 'Edit Stock Details' : 'Add Stock Details' }}</h4>
         <ul class="app-line-breadcrumbs mb-3">
             <li>
                 <a href="{{ route('dashboard') }}" class="f-s-14 f-w-500">
@@ -52,13 +51,12 @@
                 </a>
             </li>
             <li class="active">
-                <a href="#" class="f-s-14 f-w-500">Add Stock</a>
+                <a href="#" class="f-s-14 f-w-500">{{ isset($purchase) ? 'Edit Stock' : 'Add Stock' }}</a>
             </li>
         </ul>
     </div>
 </div>
 
-<!-- Global Errors -->
 @if($errors->any())
 <div class="alert alert-danger alert-dismissible fade show">
     <ul class="mb-0">
@@ -68,40 +66,34 @@
 </div>
 @endif
 
-<form action="{{ route('purchases.store') }}" method="POST" class="app-form needs-validation" novalidate>
+<form action="{{ isset($purchase) ? route('purchases.update', $purchase->id) : route('purchases.store') }}" method="POST" class="app-form needs-validation" novalidate>
 @csrf
+@if(isset($purchase)) @method('PUT') @endif
 
 <div class="row">
     <div class="col-12">
         <div class="card shadow-sm">
             <div class="card-body">
-                <h5 class="section-title">Add Uniform Stock</h5>
+                <h5 class="section-title">Purchase Info</h5>
                 <div class="row g-3">
                     <div class="col-md-4">
                         <div class="detail-card">
                             <label class="label">Purchase Date <span class="text-danger">*</span></label>
-                            <input type="date" name="purchase_date" value="{{ old('purchase_date') }}" class="form-control" required>
+                            <input type="date" name="purchase_date" value="{{ old('purchase_date', $purchase->purchase_date ?? '') }}" class="form-control" required>
                             <div class="invalid-feedback">Please enter date</div>
                         </div>
                     </div>
-                    {{-- <div class="col-md-3">
-                        <div class="detail-card">
-                            <label class="label">Purchase No <span class="text-danger">*</span></label>
-                            <input type="text" name="purchase_number" value="{{ old('purchase_number') }}" class="form-control" required>
-                            <div class="invalid-feedback">Please enter purchase number</div>
-                        </div>
-                    </div> --}}
                     <div class="col-md-4">
                         <div class="detail-card">
                             <label class="label">Supplier Name <span class="text-danger">*</span></label>
-                            <input type="text" name="supplier_name" value="{{ old('supplier_name') }}" class="form-control" required>
+                            <input type="text" name="supplier_name" value="{{ old('supplier_name', $purchase->supplier_name ?? '') }}" class="form-control" required>
                             <div class="invalid-feedback">Please enter supplier name</div>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="detail-card">
-                            <label class="label">Purchase Remarks</label>
-                            <input type="text" name="remarks" value="{{ old('remarks') }}" class="form-control">
+                            <label class="label">Remarks</label>
+                            <input type="text" name="remarks" value="{{ old('remarks', $purchase->remarks ?? '') }}" class="form-control">
                         </div>
                     </div>
                 </div>
@@ -110,7 +102,14 @@
                 <div class="table-responsive">
                     <table class="table items-table align-middle" id="items-table">
                         <thead class="table-light">
-                            <tr><th>Item</th><th>Qty</th><th>Price</th><th>Total</th><th></th></tr>
+                            <tr>
+                                <th>Item</th>
+                                <th>Size</th>
+                                <th>Qty</th>
+                                <th>Price</th>
+                                <th>Total</th>
+                                <th></th>
+                            </tr>
                         </thead>
                         <tbody></tbody>
                     </table>
@@ -120,7 +119,7 @@
 
                 <div class="text-end mt-4">
                     <button class="btn btn-primary px-4" type="submit">
-                        <i class="ti ti-device-floppy pe-1"></i> Save Purchase
+                        <i class="ti ti-device-floppy pe-1"></i> {{ isset($purchase) ? 'Update Purchase' : 'Save Purchase' }}
                     </button>
                     <a href="{{ route('purchases.index') }}" class="btn btn-outline-secondary">Cancel</a>
                 </div>
@@ -130,80 +129,30 @@
 </div>
 </form>
 
-{{-- <script>
-document.addEventListener('DOMContentLoaded', function () {
-    // Bootstrap validation
-    const forms = document.querySelectorAll('.app-form');
-    Array.from(forms).forEach(function(form) {
-        form.addEventListener('submit', function(event) {
-            if (!form.checkValidity()) {
-                event.preventDefault(); // stop submit
-                event.stopPropagation();
-            }
-            form.classList.add('was-validated');
-        }, false);
-    });
-
-    // Dynamic items rows
-    const masters = @json($masters);
-    let rowIndex = 0;
-
-    function newRow(idx){
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td>
-                <select name="items[${idx}][uniform_master_id]" class="form-select" required>
-                    <option value="">--select--</option>
-                    ${masters.map(m=>`<option value="${m.id}">${m.name}</option>`).join('')}
-                </select>
-            </td>
-            <td><input type="number" name="items[${idx}][quantity]" class="form-control qty" value="1" min="1"></td>
-            <td><input type="number" step="0.01" name="items[${idx}][price]" class="form-control price"></td>
-            <td class="total-cell">0</td>
-            <td><button type="button" class="btn btn-sm btn-danger remove">x</button></td>
-        `;
-        return tr;
-    }
-
-    document.getElementById('add-row').addEventListener('click', ()=>{
-        document.querySelector('#items-table tbody').appendChild(newRow(rowIndex));
-        rowIndex++;
-    });
-
-    document.addEventListener('click', function(e){
-        if(e.target.classList.contains('remove')) e.target.closest('tr').remove();
-    });
-
-    document.addEventListener('input', function(e){
-        if(e.target.classList.contains('qty') || e.target.classList.contains('price')){
-            const tr = e.target.closest('tr');
-            const qty = parseFloat(tr.querySelector('.qty').value) || 0;
-            const price = parseFloat(tr.querySelector('.price').value) || 0;
-            tr.querySelector('.total-cell').textContent = (qty * price).toFixed(2);
-        }
-    });
-});
-</script> --}}
-
 <script>
 (function(){
-    // get masters array [{id:1,name:'Shirt',price:250},…]
+    // masters array with sizes array
     const masters = @json($masters);
+    const existingItems = @json(old('items', isset($purchase) ? $purchase->items->toArray() : []));
     let rowIndex = 0;
 
-    function newRow(idx){
+    function newRow(idx, itemData = null){
         const tr = document.createElement('tr');
 
-        // Let's get the masters[0] values ​​(Shirt)
         const firstId = masters.length > 0 ? masters[0].id : '';
         const firstPrice = masters.length > 0 ? masters[0].price : '';
+        const firstSizes = masters.length > 0 ? masters[0].sizes || [] : [];
 
         tr.innerHTML = `
             <td>
-                <select name="items[${idx}][uniform_master_id]"
-                        class="form-control item-select" required>
+                <select name="items[${idx}][uniform_master_id]" class="form-control item-select" required>
                     <option value="">--select--</option>
-                    ${masters.map(m=>`<option value="${m.id}" data-price="${m.price}">${m.name}</option>`).join('')}
+                    ${masters.map(m=>`<option value="${m.id}" data-price="${m.price}" data-sizes='${JSON.stringify(m.sizes||[])}'>${m.name}</option>`).join('')}
+                </select>
+            </td>
+            <td>
+                <select name="items[${idx}][size]" class="form-control size-select" required>
+                    <option value="">--select--</option>
                 </select>
             </td>
             <td><input type="number" name="items[${idx}][quantity]" class="form-control qty" value="1" min="1"></td>
@@ -212,18 +161,54 @@ document.addEventListener('DOMContentLoaded', function () {
             <td><button type="button" class="btn btn-sm btn-danger remove">x</button></td>
         `;
 
-        // dropdown + price default set
         setTimeout(()=>{
             const sel = tr.querySelector('.item-select');
-            sel.value = firstId;
-            tr.querySelector('.price').value = firstPrice;
-            tr.querySelector('.total-cell').textContent = (1 * firstPrice).toFixed(2);
+            const sizeSel = tr.querySelector('.size-select');
+
+            let selectedId = firstId;
+            let selectedPrice = firstPrice;
+            let selectedSize = firstSizes.length ? firstSizes[0] : '';
+            let qty = 1;
+
+            if(itemData){
+                selectedId = itemData.uniform_master_id;
+                selectedPrice = itemData.price;
+                selectedSize = itemData.size;
+                qty = itemData.quantity;
+            }
+
+            sel.value = selectedId;
+            tr.querySelector('.price').value = selectedPrice;
+            tr.querySelector('.qty').value = qty;
+
+            // populate size dropdown
+            const itemOpt = sel.selectedOptions[0];
+            const sizes = JSON.parse(itemOpt.dataset.sizes || '[]');
+            sizeSel.innerHTML = '<option value="">--select--</option>';
+            sizes.forEach(sz=>{
+                const so = document.createElement('option');
+                so.value = sz;
+                so.textContent = sz;
+                sizeSel.appendChild(so);
+            });
+            if(selectedSize) sizeSel.value = selectedSize;
+
+            tr.querySelector('.total-cell').textContent = (qty * selectedPrice).toFixed(2);
+
         },0);
 
         return tr;
     }
 
-    // Add row button
+    // Render existing items
+    if(existingItems.length){
+        existingItems.forEach(item=>{
+            document.querySelector('#items-table tbody').appendChild(newRow(rowIndex, item));
+            rowIndex++;
+        });
+    }
+
+    // Add row
     document.getElementById('add-row').addEventListener('click', ()=>{
         document.querySelector('#items-table tbody').appendChild(newRow(rowIndex));
         rowIndex++;
@@ -236,7 +221,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // qty or price change → total update
+    // Qty or Price change → total
     document.addEventListener('input', function(e){
         if(e.target.classList.contains('qty') || e.target.classList.contains('price')){
             const tr = e.target.closest('tr');
@@ -246,13 +231,26 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // item dropdown change → auto price fill
+    // Item change → auto price & size update
     document.addEventListener('change', function(e){
+        const tr = e.target.closest('tr');
         if(e.target.classList.contains('item-select')){
             const opt = e.target.selectedOptions[0];
             const price = parseFloat(opt.dataset.price) || 0;
-            const tr = e.target.closest('tr');
             tr.querySelector('.price').value = price;
+
+            // populate size dropdown
+            const sizes = JSON.parse(opt.dataset.sizes || '[]');
+            const sizeSel = tr.querySelector('.size-select');
+            sizeSel.innerHTML = '<option value="">--select--</option>';
+            sizes.forEach(sz=>{
+                const so = document.createElement('option');
+                so.value = sz;
+                so.textContent = sz;
+                sizeSel.appendChild(so);
+            });
+            if(sizes.length) sizeSel.value = sizes[0];
+
             const qty = parseFloat(tr.querySelector('.qty').value) || 0;
             tr.querySelector('.total-cell').textContent = (qty * price).toFixed(2);
         }

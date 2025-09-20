@@ -60,10 +60,10 @@
                                     <tr>
                                         {{-- <td>{{ $m->id }}</td> --}}
                                         <td>
-                                        <a href="{{ route('masters.show', $m) }}"
-                                        class="text-primary text-decoration-underline" title="View">
-                                        {{ $m->name }}</a>
-                                       </td>
+                                            <a href="{{ route('masters.show', $m) }}"
+                                                class="text-primary text-decoration-underline" title="View">
+                                                {{ $m->name }}</a>
+                                        </td>
                                         <td>{{ $m->size }}</td>
                                         <td>{{ $m->price }}</td>
                                         <td>{{ optional($m->stock)->remaining_stock ?? 0 }}</td>
@@ -83,14 +83,25 @@
                                                 class="btn btn-light-success icon-btn b-r-4" title="Edit">
                                                 <i class="ti ti-edit text-success"></i>
                                             </a>
-                                            <form action="{{ route('masters.destroy', $m) }}" method="POST" class="d-inline"
-                                                onsubmit="return confirm('Are you sure you want to delete this uniform?');">
+                                            <form action="{{ route('masters.destroy', $m) }}" method="POST"
+                                                class="d-inline delete-form">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-light-danger icon-btn b-r-4" title="Delete">
+                                                <button type="submit" class="btn btn-light-danger icon-btn b-r-4"
+                                                    title="Delete">
                                                     <i class="ti ti-trash"></i>
                                                 </button>
                                             </form>
+                                            {{-- <form action="{{ route('masters.destroy', $m) }}" method="POST"
+                                                class="d-inline"
+                                                onsubmit="return confirm('Are you sure you want to delete this uniform?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-light-danger icon-btn b-r-4"
+                                                    title="Delete">
+                                                    <i class="ti ti-trash"></i>
+                                                </button>
+                                            </form> --}}
                                         </td>
                                     </tr>
                                 @endforeach
@@ -162,4 +173,31 @@
             });
         });
     });
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // DELETE CONFIRMATION ALERT
+    document.querySelectorAll('.delete-form').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault(); // prevent normal submit
+            let formRef = this;
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This will permanently delete the employee record!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // actually submit the form
+                    formRef.submit();
+                }
+            });
+        });
+    });
+});
 </script>

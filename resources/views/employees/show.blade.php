@@ -186,6 +186,10 @@
                                         type="button">
                                         <i class="ti ti-user-circle pe-2"></i><span class="ms-2">Personal Info</span>
                                     </button>
+                                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-official"
+                                        type="button">
+                                        <i class="ti ti-id-badge pe-2"></i><span class="ms-2">Official Details</span>
+                                    </button>
                                     <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-address"
                                         type="button">
                                         <i class="ti ti-home pe-2"></i><span class="ms-2">Address Info</span>
@@ -202,10 +206,10 @@
                                         type="button">
                                         <i class="ti ti-briefcase pe-2"></i><span class="ms-2">Experiences</span>
                                     </button>
-                                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-official"
+                                    {{-- <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-official"
                                         type="button">
                                         <i class="ti ti-id-badge pe-2"></i><span class="ms-2">Official Details</span>
-                                    </button>
+                                    </button> --}}
                                     <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-payroll"
                                         type="button">
                                         <i class="ti ti-cash-banknote pe-2"></i><span class="ms-2">Payroll Info</span>
@@ -274,6 +278,30 @@
                                                 'Blood Group' => $employee->blood_group,
                                             ] as $label => $value)
                                                 <div class="col-md-6">
+                                                    <div class="detail-card">
+                                                        <div class="label">{{ $label }}</div>
+                                                        <div class="value">{{ $value ?? '-' }}</div>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+
+
+                                      <div class="tab-pane fade" id="tab-official">
+                                        <h5 class="section-title">Official Details</h5>
+                                        <div class="row g-2">
+                                            @foreach ([
+                                                'Role' => optional($employee->officialDetail)->role,
+                                                'Date of Join' => optional($employee->officialDetail?->date_of_join)?->format('d-m-Y'),
+                                                'Employee Type' => optional($employee->officialDetail)->employee_type,
+                                                'Salary' => optional($employee->officialDetail)->salary ? number_format($employee->officialDetail->salary, 2) : '-',
+                                                'PF Number' => optional($employee->officialDetail)->pf_number,
+                                                'ESI Number' => optional($employee->officialDetail)->esi_number,
+                                                'PF Calculation' => isset($employee->officialDetail->pf_calculation) ? ($employee->officialDetail->pf_calculation ? 'Yes' : 'No') : '-',
+                                                'ESI Calculation' => isset($employee->officialDetail->esi_calculation) ? ($employee->officialDetail->esi_calculation ? 'Yes' : 'No') : '-',
+                                            ] as $label => $value)
+                                                <div class="col-md-6 mb-2">
                                                     <div class="detail-card">
                                                         <div class="label">{{ $label }}</div>
                                                         <div class="value">{{ $value ?? '-' }}</div>
@@ -412,7 +440,7 @@
                                         @endforelse
                                     </div>
 
-                                    <div class="tab-pane fade" id="tab-official">
+                                    {{-- <div class="tab-pane fade" id="tab-official">
                                         <h5 class="section-title">Official Details</h5>
                                         <div class="row g-2">
                                             @foreach ([
@@ -433,7 +461,7 @@
                                                 </div>
                                             @endforeach
                                         </div>
-                                    </div>
+                                    </div> --}}
 
                                     <div class="tab-pane fade" id="tab-payroll">
                                         <h5 class="section-title">Payroll Information</h5>

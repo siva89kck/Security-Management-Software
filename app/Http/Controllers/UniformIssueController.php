@@ -87,6 +87,7 @@ class UniformIssueController extends Controller
                     'quantity'          => $item['quantity'],
                     'price'             => $item['price'],
                     'total'             => $total,
+                    'size'              => $item['size'] ?? null,
                 ]);
 
                 $stock = UniformStock::where('uniform_master_id', $item['uniform_master_id'])->first();
@@ -203,6 +204,7 @@ class UniformIssueController extends Controller
                     'quantity'          => $item['quantity'],
                     'price'             => $item['price'],
                     'total'             => $item['quantity'] * $item['price'],
+                    'size'              => $item['size'] ?? null,
                 ]);
 
                 $stock = UniformStock::where('uniform_master_id', $item['uniform_master_id'])->first();

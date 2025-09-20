@@ -10,7 +10,7 @@ class UniformPurchaseItem extends Model
 
     protected $table = 'uniform_purchase_items';
 
-    protected $fillable = ['purchase_id','uniform_master_id','quantity','price','total'];
+    protected $fillable = ['purchase_id','uniform_master_id','size','quantity','price','total'];
 
     public function purchase(){
         return $this->belongsTo(UniformPurchase::class, 'purchase_id');

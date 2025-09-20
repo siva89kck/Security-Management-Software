@@ -2,26 +2,15 @@
 
 @section('content')
 <style>
-    /* Card Design */
-    .detail-card {
-        background: #f9fafd;
-        border-radius: 12px;
-        padding: 20px;
-        margin-bottom: 20px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        transition: all 0.3s ease;
-    }
-    .detail-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
-    .detail-card .form-control,
-    .detail-card .form-select { border-radius: 8px; transition: 0.3s; }
-    .detail-card .form-control:focus,
-    .detail-card .form-select:focus { border-color: #0d6efd; box-shadow: 0 0 0 0.25rem rgba(13,110,253,.25); }
-    .label { font-size:0.85rem; color:#6c757d; margin-bottom:0.25rem; display:block; }
-    .section-title { font-size:1.1rem; font-weight:600; color:#2c3e50; margin-bottom:1rem; padding-bottom:0.5rem; border-bottom:1px solid #e9ecef; }
-    .items-table th, .items-table td { vertical-align: middle; }
+.detail-card { background: #f9fafd; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: all 0.3s ease; }
+.detail-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+.detail-card .form-control, .detail-card .form-select { border-radius: 8px; transition: 0.3s; }
+.detail-card .form-control:focus, .detail-card .form-select:focus { border-color: #0d6efd; box-shadow: 0 0 0 0.25rem rgba(13,110,253,.25); }
+.label { font-size:0.85rem; color:#6c757d; margin-bottom:0.25rem; display:block; }
+.section-title { font-size:1.1rem; font-weight:600; color:#2c3e50; margin-bottom:1rem; padding-bottom:0.5rem; border-bottom:1px solid #e9ecef; }
+.items-table th, .items-table td { vertical-align: middle; }
 </style>
 
-<!-- Page Title & Breadcrumb -->
 <div class="row m-1">
     <div class="col-12">
         <h4 class="main-title">Edit Stock Entry - {{ $purchase->purchase_number }}</h4>
@@ -33,7 +22,6 @@
     </div>
 </div>
 
-<!-- Global Errors -->
 @if($errors->any())
 <div class="alert alert-danger alert-dismissible fade show">
     <ul class="mb-0">@foreach($errors->all() as $err)<li>{{ $err }}</li>@endforeach</ul>
@@ -58,13 +46,6 @@
                             <div class="invalid-feedback">Please enter date</div>
                         </div>
                     </div>
-                    {{-- <div class="col-md-3">
-                        <div class="detail-card">
-                            <label class="label">Purchase No <span class="text-danger">*</span></label>
-                            <input type="text" name="purchase_number" value="{{ old('purchase_number', $purchase->purchase_number) }}" class="form-control" readonly>
-                            <div class="invalid-feedback">Please enter purchase number</div>
-                        </div>
-                    </div> --}}
                     <div class="col-md-4">
                         <div class="detail-card">
                             <label class="label">Supplier Name <span class="text-danger">*</span></label>
@@ -84,7 +65,7 @@
                 <div class="table-responsive">
                     <table class="table items-table align-middle" id="items-table">
                         <thead class="table-light">
-                            <tr><th>Item</th><th>Qty</th><th>Price</th><th>Total</th><th></th></tr>
+                            <tr><th>Item</th><th>Size</th><th>Qty</th><th>Price</th><th>Total</th><th></th></tr>
                         </thead>
                         <tbody>
                             @foreach($purchase->items as $index => $item)
@@ -93,10 +74,28 @@
                                     <select name="items[{{ $index }}][uniform_master_id]" class="form-control item-select" required>
                                         <option value="">--select--</option>
                                         @foreach($masters as $master)
-                                            <option value="{{ $master->id }}" data-price="{{ $master->price }}" {{ $item->uniform_master_id == $master->id ? 'selected' : '' }}>{{ $master->name }}</option>
+                                            <option value="{{ $master->id }}"
+                                                data-price="{{ $master->price }}"
+                                                data-sizes='@json(explode(",",$master->size))'
+                                                {{ $item->uniform_master_id == $master->id ? 'selected' : '' }}>
+                                                {{ $master->name }}
+                                            </option>
                                         @endforeach
                                     </select>
                                 </td>
+                                <td>
+                                <select name="items[{{ $index }}][size]" class="form-control size-select" required>
+                                    <option value="">--select--</option>
+                                    @php
+                                        $selectedMaster = $masters->firstWhere('id', $item->uniform_master_id);
+                                        $sizes = $selectedMaster && $selectedMaster->size ? explode(',', $selectedMaster->size) : [];
+                                    @endphp
+                                    @foreach($sizes as $sz)
+                                        <option value="{{ $sz }}" {{ $item->size == $sz ? 'selected' : '' }}>{{ $sz }}</option>
+                                    @endforeach
+                                </select>
+                            </td>
+
                                 <td><input type="number" name="items[{{ $index }}][quantity]" class="form-control qty" value="{{ $item->quantity }}" min="1"></td>
                                 <td><input type="number" step="0.01" name="items[{{ $index }}][price]" class="form-control price" value="{{ $item->price }}"></td>
                                 <td class="total-cell">{{ number_format($item->total, 2) }}</td>
@@ -119,21 +118,40 @@
 </div>
 </form>
 
+@php
+    // Create a safe PHP array for JS to avoid inline arrow functions inside @json
+    $mastersForJs = collect($masters)->map(function($m){
+        return [
+            'id' => $m->id,
+            'name' => $m->name,
+            'price' => $m->price,
+            'sizes' => !empty($m->size) ? explode(',', $m->size) : []
+        ];
+    })->values()->toArray();
+@endphp
+
 <script>
 (function(){
-    const masters = @json($masters);
+    // Use the prepared PHP array
+    const masters = @json($mastersForJs);
     let rowIndex = {{ $purchase->items->count() }};
 
     function newRow(idx){
         const tr = document.createElement('tr');
         const firstId = masters.length > 0 ? masters[0].id : '';
         const firstPrice = masters.length > 0 ? masters[0].price : '';
+        const firstSizes = masters.length > 0 ? masters[0].sizes : [];
 
         tr.innerHTML = `
             <td>
                 <select name="items[${idx}][uniform_master_id]" class="form-control item-select" required>
                     <option value="">--select--</option>
-                    ${masters.map(m=>`<option value="${m.id}" data-price="${m.price}">${m.name}</option>`).join('')}
+                    ${masters.map(m=>`<option value="${m.id}" data-price="${m.price}" data-sizes='${JSON.stringify(m.sizes)}'>${m.name}</option>`).join('')}
+                </select>
+            </td>
+            <td>
+                <select name="items[${idx}][size]" class="form-control size-select" required>
+                    <option value="">--select--</option>
                 </select>
             </td>
             <td><input type="number" name="items[${idx}][quantity]" class="form-control qty" value="1" min="1"></td>
@@ -141,13 +159,27 @@
             <td class="total-cell">${firstPrice}</td>
             <td><button type="button" class="btn btn-sm btn-danger remove">x</button></td>
         `;
+
         setTimeout(()=>{
-            tr.querySelector('.item-select').value = firstId;
+            const sel = tr.querySelector('.item-select');
+            const sizeSel = tr.querySelector('.size-select');
+            sel.value = firstId;
+
+            // Populate size dropdown
+            const sizes = JSON.parse(sel.selectedOptions[0].dataset.sizes || '[]');
+            sizeSel.innerHTML = '<option value="">--select--</option>';
+            sizes.forEach(sz=>{
+                const opt = document.createElement('option');
+                opt.value = sz; opt.textContent = sz;
+                sizeSel.appendChild(opt);
+            });
+            if(sizes.length) sizeSel.value = sizes[0];
         },0);
+
         return tr;
     }
 
-    // Add row button
+    // Add row
     document.getElementById('add-row').addEventListener('click', ()=>{
         document.querySelector('#items-table tbody').appendChild(newRow(rowIndex));
         rowIndex++;
@@ -168,13 +200,30 @@
         }
     });
 
-    // item dropdown change → auto price fill
+    // item dropdown change → auto price & size update (preserve existing selection if possible)
     document.addEventListener('change', function(e){
         if(e.target.classList.contains('item-select')){
+            const tr = e.target.closest('tr');
             const opt = e.target.selectedOptions[0];
             const price = parseFloat(opt.dataset.price) || 0;
-            const tr = e.target.closest('tr');
             tr.querySelector('.price').value = price;
+
+            // populate size but preserve selected if possible
+            const sizeSel = tr.querySelector('.size-select');
+            const currentSelected = sizeSel.value;
+            const sizes = JSON.parse(opt.dataset.sizes || '[]');
+            sizeSel.innerHTML = '<option value="">--select--</option>';
+            sizes.forEach(sz=>{
+                const so = document.createElement('option');
+                so.value = sz; so.textContent = sz;
+                sizeSel.appendChild(so);
+            });
+            if (sizes.includes(currentSelected)) {
+                sizeSel.value = currentSelected;
+            } else if (sizes.length) {
+                sizeSel.value = sizes[0];
+            }
+
             const qty = parseFloat(tr.querySelector('.qty').value) || 0;
             tr.querySelector('.total-cell').textContent = (qty*price).toFixed(2);
         }
