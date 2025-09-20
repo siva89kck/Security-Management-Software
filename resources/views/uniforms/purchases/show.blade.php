@@ -32,6 +32,11 @@
         border-bottom: 1px solid #e9ecef;
     }
 
+    /* Default hide print header */
+    .print-header {
+        display: none;
+    }
+
     /* print style */
     @media print {
         body * {
@@ -49,7 +54,10 @@
         .no-print {
             display: none !important;
         }
+
+        /* only show logo & header when printing */
         .print-header {
+            display: block !important;
             text-align: center;
             margin-bottom: 20px;
         }
@@ -93,7 +101,7 @@
         <i class="ti ti-arrow-left"></i> Back to List
       </a>
       <button onclick="printReport()" class="btn btn-primary">
-        <i class="ti ti-printer"></i> Print Report
+        <i class="ti ti-printer"></i> Print Uniform Stock
       </button>
     </div>
   </div>
@@ -103,13 +111,13 @@
 <div id="printArea">
 
     <!-- Print Header (logo + company name) -->
-    {{-- <div class="print-header">
-        <img src="{{ asset('images/logo.png') }}" alt="Company Logo">
-        <h2>My Company Name</h2>
+    <div class="print-header">
+        <img src="{{ asset('assets/images/logo/RSS_Security_Logo.png') }}" alt="RSS_Security_Logo">
+        {{-- <h2>My Company Name</h2>
         <p>123 Street Name, City, State - ZIP</p>
-        <p>Phone: +91 98765 43210 | Email: info@company.com</p>
+        <p>Phone: +91 98765 43210 | Email: info@company.com</p> --}}
         <hr>
-    </div> --}}
+    </div>
 
     <div class="row">
         <div class="col-12">

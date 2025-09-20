@@ -51,7 +51,7 @@
                                     <th>Size</th>
                                     <th>Price</th>
                                     <th>Remaining</th>
-                                    <th>Status</th>
+                                    {{-- <th>Status</th> --}}
                                     <th class="text-center">Actions</th>
                                 </tr>
                             </thead>
@@ -67,13 +67,13 @@
                                         <td>{{ $m->size }}</td>
                                         <td>{{ $m->price }}</td>
                                         <td>{{ optional($m->stock)->remaining_stock ?? 0 }}</td>
-                                        <td>
+                                        {{-- <td>
                                             <button
                                                 class="btn btn-sm status-btn w-100 {{ $m->status == 'active' ? 'btn-success' : 'btn-danger' }}"
                                                 data-id="{{ $m->id }}">
                                                 {{ ucfirst($m->status) }}
                                             </button>
-                                        </td>
+                                        </td> --}}
                                         <td class="text-center">
                                             <a href="{{ route('masters.show', $m) }}"
                                                 class="btn btn-light-info icon-btn b-r-4" title="View">
