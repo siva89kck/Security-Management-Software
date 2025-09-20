@@ -29,10 +29,10 @@
                 <input type="text" name="family_members[{{ $i }}][name]" value="{{ $member['name'] ?? '' }}" class="form-control" >
             </div>
 
-            <div class="col-md-6">
+            {{-- <div class="col-md-6">
                 <label class="form-label">DOB</label>
                 <input type="date" name="family_members[{{ $i }}][dob]" value="{{ $member['dob'] ?? '' }}" class="form-control dob-field">
-            </div>
+            </div> --}}
 
             <div class="col-md-6">
                 <label class="form-label">Age</label>
@@ -44,7 +44,7 @@
                 <input type="text" name="family_members[{{ $i }}][relationship]" value="{{ $member['relationship'] ?? '' }}" class="form-control" >
             </div>
 
-            <div class="col-md-6">
+            {{-- <div class="col-md-6">
                 <label class="form-label">Marital Status</label>
                 <select name="family_members[{{ $i }}][marital_status]" class="form-select" >
                     <option value="">--Select--</option>
@@ -53,7 +53,7 @@
                     <option value="Widow" {{ ($member['marital_status'] ?? '') == 'Widow' ? 'selected' : '' }}>Widow</option>
                     <option value="Divorce" {{ ($member['marital_status'] ?? '') == 'Divorce' ? 'selected' : '' }}>Divorce</option>
                 </select>
-            </div>
+            </div> --}}
 
             <div class="col-md-6">
                 <label class="form-label">Mobile Number</label>
@@ -81,10 +81,10 @@
             <label class="form-label">Name</label>
             <input type="text" name="family_members[__INDEX__][name]" class="form-control" >
         </div>
-        <div class="col-md-6">
+        {{-- <div class="col-md-6">
             <label class="form-label">DOB</label>
             <input type="date" name="family_members[__INDEX__][dob]" class="form-control dob-field">
-        </div>
+        </div> --}}
         <div class="col-md-6">
             <label class="form-label">Age</label>
             <input type="number" name="family_members[__INDEX__][age]" class="form-control age-field">
@@ -93,7 +93,7 @@
             <label class="form-label">Relationship</label>
             <input type="text" name="family_members[__INDEX__][relationship]" class="form-control" >
         </div>
-        <div class="col-md-6">
+        {{-- <div class="col-md-6">
             <label class="form-label">Marital Status</label>
             <select name="family_members[__INDEX__][marital_status]" class="form-select" >
                 <option value="">--Select--</option>
@@ -102,7 +102,7 @@
                 <option value="Widow">Widow</option>
                 <option value="Divorce">Divorce</option>
             </select>
-        </div>
+        </div> --}}
         <div class="col-md-6">
             <label class="form-label">Mobile Number</label>
             <input type="text" name="family_members[__INDEX__][mobile_number]" class="form-control" >
@@ -155,26 +155,26 @@
 </style>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    // Event delegation: listen for change on any DOB field inside #familyRepeater
-    document.getElementById('familyRepeater').addEventListener('change', function (e) {
-        if (e.target.classList.contains('dob-field')) {
-            const dobInput = e.target;
-            const ageInput = dobInput
-                .closest('.repeater-item')
-                .querySelector('.age-field');
+// document.addEventListener('DOMContentLoaded', function () {
+//     // Event delegation: listen for change on any DOB field inside #familyRepeater
+//     document.getElementById('familyRepeater').addEventListener('change', function (e) {
+//         if (e.target.classList.contains('dob-field')) {
+//             const dobInput = e.target;
+//             const ageInput = dobInput
+//                 .closest('.repeater-item')
+//                 .querySelector('.age-field');
 
-            const dob = new Date(dobInput.value);
-            if (!isNaN(dob)) {
-                const diff = new Date(Date.now() - dob.getTime());
-                const age = Math.abs(diff.getUTCFullYear() - 1970);
-                ageInput.value = age;
-            } else {
-                ageInput.value = '';
-            }
-        }
-    });
-});
+//             const dob = new Date(dobInput.value);
+//             if (!isNaN(dob)) {
+//                 const diff = new Date(Date.now() - dob.getTime());
+//                 const age = Math.abs(diff.getUTCFullYear() - 1970);
+//                 ageInput.value = age;
+//             } else {
+//                 ageInput.value = '';
+//             }
+//         }
+//     });
+// });
 
 // Add/Remove row handlers
 document.addEventListener('click', function(e) {

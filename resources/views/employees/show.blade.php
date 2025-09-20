@@ -361,10 +361,10 @@
                                                         <div class="label">Name</div>
                                                         <div class="value">{{ $member->name ?? '-' }}</div>
                                                     </div>
-                                                    <div class="col-md-4 mb-2">
+                                                    {{-- <div class="col-md-4 mb-2">
                                                         <div class="label">Date of Birth</div>
                                                         <div class="value">{{ $member->dob ? \Carbon\Carbon::parse($member->dob)->format('d-m-Y') : '-' }}</div>
-                                                    </div>
+                                                    </div> --}}
                                                     <div class="col-md-4 mb-2">
                                                         <div class="label">Age</div>
                                                         <div class="value">{{ $member->age ?? '-' }}</div>
