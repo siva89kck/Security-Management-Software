@@ -42,9 +42,9 @@
         </div>
 
         <div class="col-md-6">
-            <label class="form-label">Salary</label>
+            <label class="form-label">Salary <span class="text-danger">*</span></label>
             <input type="number" name="official[salary]" class="form-control" step="0.01" min="0"
-                value="{{ old('official.salary', $employeeOfficial->salary ?? '') }}">
+                value="{{ old('official.salary', $employeeOfficial->salary ?? '') }}" required>
         </div>
 
         <div class="col-md-6">
