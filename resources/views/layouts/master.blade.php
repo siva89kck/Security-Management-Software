@@ -91,6 +91,33 @@
         float: right!important;
         padding: 1rem 1.25rem !important;
     }
+
+/* Default sorting arrow both */
+table.dataTable thead .sorting {
+  background-image: url('https://cdn.datatables.net/1.13.6/images/sort_both.png');
+  background-repeat: no-repeat;
+  background-position: center right;
+}
+
+/* Ascending arrow */
+table.dataTable thead .sorting_asc {
+  background-image: url('https://cdn.datatables.net/1.13.6/images/sort_asc.png');
+  background-repeat: no-repeat;
+  background-position: center right;
+}
+
+/* Descending arrow */
+table.dataTable thead .sorting_desc {
+  background-image: url('https://cdn.datatables.net/1.13.6/images/sort_desc.png');
+  background-repeat: no-repeat;
+  background-position: center right;
+}
+
+/* Optional – header padding so arrow not overlap */
+table.dataTable thead th {
+  padding-right: 25px; /* arrow க்கு இடம் */
+}
+
 </style>
 
 </head>

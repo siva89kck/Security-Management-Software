@@ -83,7 +83,7 @@
                                                 class="btn btn-light-success icon-btn b-r-4" title="Edit">
                                                 <i class="ti ti-edit text-success"></i>
                                             </a>
-                                            <form action="{{ route('employees.destroy', $e) }}" method="POST"
+                                            {{-- <form action="{{ route('employees.destroy', $e) }}" method="POST"
                                                 class="d-inline"
                                                 onsubmit="return confirm('Are you sure you want to delete this employee?');">
                                                 @csrf
@@ -92,7 +92,17 @@
                                                     title="Delete">
                                                     <i class="ti ti-trash"></i>
                                                 </button>
+                                            </form> --}}
+                                            <!-- Existing Delete Form -->
+                                            <form action="{{ route('employees.destroy', $e) }}" method="POST"
+                                                class="d-inline delete-form">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-light-danger icon-btn b-r-4" title="Delete">
+                                                    <i class="ti ti-trash"></i>
+                                                </button>
                                             </form>
+
                                         </td>
                                     </tr>
                                 @endforeach
@@ -204,4 +214,32 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 </script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // DELETE CONFIRMATION ALERT
+    document.querySelectorAll('.delete-form').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault(); // prevent normal submit
+            let formRef = this;
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This will permanently delete the employee record!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // actually submit the form
+                    formRef.submit();
+                }
+            });
+        });
+    });
+});
+</script>
+
 

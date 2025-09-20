@@ -4,9 +4,9 @@
     <div class="row g-3">
 
         <div class="col-md-6">
-            <label class="form-label">Role </label>
-            <select name="official[role]" class="form-select" >
-                {{-- <option value="">--</option> --}}
+            <label class="form-label">Role <span class="text-danger">*</span></label>
+            <select name="official[role]" class="form-select" required>
+                <option value="">--</option>
                 <option value="Security Guard(SG)" {{ old('official.role', $employeeOfficial->role ?? '') == 'Security Guard(SG)' ? 'selected' : '' }}>Security Guard(SG)</option>
                 <option value="Head Guard(HG)" {{ old('official.role', $employeeOfficial->role ?? '') == 'Head Guard(HG)' ? 'selected' : '' }}>Head Guard(HG)</option>
                 <option value="Security Officer(SO)" {{ old('official.role', $employeeOfficial->role ?? '') == 'Security Officer(SO)' ? 'selected' : '' }}>Security Officer(SO)</option>
@@ -25,9 +25,9 @@
         </div>
 
         <div class="col-md-6">
-            <label class="form-label">Date of Join </label>
+            <label class="form-label">Date of Join <span class="text-danger">*</span></label>
             <input type="date" name="official[date_of_join]" class="form-control"
-                value="{{ old('official.date_of_join', isset($employeeOfficial->date_of_join) ? $employeeOfficial->date_of_join->format('Y-m-d') : '') }}">
+                value="{{ old('official.date_of_join', isset($employeeOfficial->date_of_join) ? $employeeOfficial->date_of_join->format('Y-m-d') : '') }}" required>
             <div class="invalid-feedback">Please select date of join.</div>
         </div>
 
