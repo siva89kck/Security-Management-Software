@@ -33,7 +33,7 @@
 
         <div class="col-md-6">
             <label class="form-label">Employee Type </label>
-            <select name="official[employee_type]" class="form-select" >
+            <select name="official[employee_type]" class="form-select" required>
                 <option value="">--</option>
                 <option value="Permanent" {{ old('official.employee_type', $employeeOfficial->employee_type ?? '') == 'Permanent' ? 'selected' : '' }}>Permanent</option>
                 <option value="Temporary" {{ old('official.employee_type', $employeeOfficial->employee_type ?? '') == 'Temporary' ? 'selected' : '' }}>Temporary</option>
