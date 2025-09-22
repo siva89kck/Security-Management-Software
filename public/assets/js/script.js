@@ -153,9 +153,14 @@ new SimpleBar(myElement, { autoHide: true });
 // Sidebar active class js
 $(function () {
     let current = location.pathname;
-    console.log(current + "=========");
-    current = current.substring(current.lastIndexOf("/") + 2);
     console.log(current);
+
+    let index = current.lastIndexOf("/");
+    index = current.lastIndexOf("/", index - 1); // go one step back
+    current = current.substring(index + 1);
+
+    console.log(current);
+
     $(".main-nav li a").each(function () {
         var $this = $(this);
         if (current === $this.attr("href").split("/").pop()) {
