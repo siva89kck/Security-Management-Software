@@ -40,13 +40,9 @@ class EmployeeController extends Controller
 
 
     public function create()
-{
-    // Create page-க்கு null-safe variables
-    $employee = null; // create page-ல் $employee இல்லை
-    return view('employees.create', compact('employee'));
-}
-
-
+    {
+        return view('employees.create');
+    }
 
     public function store(EmployeeStoreRequest $request)
 {
@@ -98,9 +94,9 @@ class EmployeeController extends Controller
             if (!empty($fam['name']) || !empty($fam['dob']) || !empty($fam['relationship']) || !empty($fam['marital_status'])) {
                 $employee->familyMembers()->create([
                     'name' => $fam['name'] ?? null,
-                    'age' => $fam['age'] ?? null,
+                    'dob' => $fam['dob'] ?? null,
                     'relationship' => $fam['relationship'] ?? null,
-                    'mobile_number' => $fam['mobile_number'] ?? null,
+                    'marital_status' => $fam['marital_status'] ?? null,
                 ]);
             }
         }
@@ -265,9 +261,9 @@ class EmployeeController extends Controller
             if (!empty($fam['name']) || !empty($fam['dob']) || !empty($fam['relationship']) || !empty($fam['marital_status'])) {
                 $employee->familyMembers()->create([
                     'name' => $fam['name'] ?? null,
-                    'age' => $fam['age'] ?? null,
+                    'dob' => $fam['dob'] ?? null,
                     'relationship' => $fam['relationship'] ?? null,
-                    'mobile_number' => $fam['mobile_number'] ?? null,
+                    'marital_status' => $fam['marital_status'] ?? null,
                 ]);
             }
         }

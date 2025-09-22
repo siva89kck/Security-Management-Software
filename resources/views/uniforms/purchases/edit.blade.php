@@ -84,7 +84,7 @@
                                     </select>
                                 </td>
                                 <td>
-                                <select name="items[{{ $index }}][size]" class="form-control size-select" required>
+                                {{-- <select name="items[{{ $index }}][size]" class="form-control size-select" required>
                                     <option value="">--select--</option>
                                     @php
                                         $selectedMaster = $masters->firstWhere('id', $item->uniform_master_id);
@@ -93,7 +93,12 @@
                                     @foreach($sizes as $sz)
                                         <option value="{{ $sz }}" {{ $item->size == $sz ? 'selected' : '' }}>{{ $sz }}</option>
                                     @endforeach
-                                </select>
+                                </select> --}}
+                                <input type="text"
+       name="items[{{ $index }}][size]"
+       class="form-control size-input"
+       value="{{ old('items.'.$index.'.size', $item->size) }}"
+       required>
                             </td>
 
                                 <td><input type="number" name="items[{{ $index }}][quantity]" class="form-control qty" value="{{ $item->quantity }}" min="1"></td>
@@ -132,7 +137,6 @@
 
 <script>
 (function(){
-    // Use the prepared PHP array
     const masters = @json($mastersForJs);
     let rowIndex = {{ $purchase->items->count() }};
 
@@ -140,7 +144,6 @@
         const tr = document.createElement('tr');
         const firstId = masters.length > 0 ? masters[0].id : '';
         const firstPrice = masters.length > 0 ? masters[0].price : '';
-        const firstSizes = masters.length > 0 ? masters[0].sizes : [];
 
         tr.innerHTML = `
             <td>
@@ -150,9 +153,7 @@
                 </select>
             </td>
             <td>
-                <select name="items[${idx}][size]" class="form-control size-select" required>
-                    <option value="">--select--</option>
-                </select>
+                <input type="text" name="items[${idx}][size]" class="form-control size-input" value="">
             </td>
             <td><input type="number" name="items[${idx}][quantity]" class="form-control qty" value="1" min="1"></td>
             <td><input type="number" step="0.01" name="items[${idx}][price]" class="form-control price" value="${firstPrice}"></td>
@@ -160,20 +161,16 @@
             <td><button type="button" class="btn btn-sm btn-danger remove">x</button></td>
         `;
 
+        // Set default selected item & price
         setTimeout(()=>{
             const sel = tr.querySelector('.item-select');
-            const sizeSel = tr.querySelector('.size-select');
             sel.value = firstId;
+            tr.querySelector('.price').value = firstPrice;
 
-            // Populate size dropdown
-            const sizes = JSON.parse(sel.selectedOptions[0].dataset.sizes || '[]');
-            sizeSel.innerHTML = '<option value="">--select--</option>';
-            sizes.forEach(sz=>{
-                const opt = document.createElement('option');
-                opt.value = sz; opt.textContent = sz;
-                sizeSel.appendChild(opt);
-            });
-            if(sizes.length) sizeSel.value = sizes[0];
+            // Default size value
+            const sizeInput = tr.querySelector('.size-input');
+            const sizes = JSON.parse(sel.selectedOptions[0]?.dataset?.sizes || '[]');
+            if(sizes.length) sizeInput.value = sizes[0];
         },0);
 
         return tr;
@@ -200,7 +197,7 @@
         }
     });
 
-    // item dropdown change → auto price & size update (preserve existing selection if possible)
+    // item dropdown change → auto price & default size
     document.addEventListener('change', function(e){
         if(e.target.classList.contains('item-select')){
             const tr = e.target.closest('tr');
@@ -208,26 +205,17 @@
             const price = parseFloat(opt.dataset.price) || 0;
             tr.querySelector('.price').value = price;
 
-            // populate size but preserve selected if possible
-            const sizeSel = tr.querySelector('.size-select');
-            const currentSelected = sizeSel.value;
+            // Set default size in text box
+            const sizeInput = tr.querySelector('.size-input');
             const sizes = JSON.parse(opt.dataset.sizes || '[]');
-            sizeSel.innerHTML = '<option value="">--select--</option>';
-            sizes.forEach(sz=>{
-                const so = document.createElement('option');
-                so.value = sz; so.textContent = sz;
-                sizeSel.appendChild(so);
-            });
-            if (sizes.includes(currentSelected)) {
-                sizeSel.value = currentSelected;
-            } else if (sizes.length) {
-                sizeSel.value = sizes[0];
-            }
+            sizeInput.value = sizes.length ? sizes[0] : '';
 
             const qty = parseFloat(tr.querySelector('.qty').value) || 0;
             tr.querySelector('.total-cell').textContent = (qty*price).toFixed(2);
         }
     });
+
 })();
 </script>
+
 @endsection

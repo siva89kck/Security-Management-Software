@@ -51,27 +51,27 @@
     margin-bottom: 5px;
 }
 </style>
+{{-- =================================================== --}}
+{{-- LANGUAGES --}}
 <h6 class="mt-3 mb-2">Languages</h6>
-
 <div id="languagesRepeater" class="language-repeater">
-
     @php
         $savedLangs = old('languages', $employee->languages ?? []);
         $defaultLangs = [
-            ['language' => 'Tamil',  'read' => 0, 'write' => 0, 'speak' => 0],
-            ['language' => 'Hindi',  'read' => 0, 'write' => 0, 'speak' => 0],
-            ['language' => 'English','read' => 0, 'write' => 0, 'speak' => 0],
+            ['language' => 'Tamil', 'read'=>0,'write'=>0,'speak'=>0],
+            ['language' => 'Hindi', 'read'=>0,'write'=>0,'speak'=>0],
+            ['language' => 'English', 'read'=>0,'write'=>0,'speak'=>0],
         ];
         $extraLangs = [];
         foreach ($savedLangs as $lang) {
-            if (!in_array($lang['language'], array_column($defaultLangs, 'language'))) {
+            if (!in_array($lang['language'], array_column($defaultLangs,'language'))) {
                 $extraLangs[] = $lang;
             } else {
                 foreach ($defaultLangs as &$d) {
-                    if ($d['language'] == $lang['language']) {
-                        $d['read']  = $lang['read'] ?? 0;
-                        $d['write'] = $lang['write'] ?? 0;
-                        $d['speak'] = $lang['speak'] ?? 0;
+                    if($d['language']==$lang['language']){
+                        $d['read']=$lang['read']??0;
+                        $d['write']=$lang['write']??0;
+                        $d['speak']=$lang['speak']??0;
                     }
                 }
             }
@@ -80,23 +80,21 @@
 
     {{-- Default Languages --}}
     @foreach($defaultLangs as $i => $lang)
-    <div class="card language-card">
-        <div class="card-body d-flex flex-wrap align-items-center justify-content-between gap-3">
-            <div class="col-md-3 mb-2 mb-md-0">
-                {{-- <label class="form-label">Language</label> --}}
-                <input type="text" class="form-control" name="languages[{{ $i }}][language]" value="{{ $lang['language'] }}" readonly required>
-                <div class="invalid-feedback">Language required</div>
-            </div>
-            <div class="col-md-8 d-flex gap-3 flex-wrap">
-                @foreach(['read'=>'Read', 'write'=>'Write', 'speak'=>'Speak'] as $key=>$label)
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" name="languages[{{ $i }}][{{ $key }}]" value="1" {{ $lang[$key] ? 'checked' : '' }}>
-                        <label class="form-check-label">{{ $label }}</label>
-                    </div>
-                @endforeach
+        <div class="card language-card">
+            <div class="card-body d-flex flex-wrap align-items-center justify-content-between gap-3">
+                <div class="col-md-3">
+                    <input type="text" class="form-control" name="languages[{{ $i }}][language]" value="{{ $lang['language'] }}" readonly required>
+                </div>
+                <div class="col-md-8 d-flex gap-3 flex-wrap">
+                    @foreach(['read'=>'Read','write'=>'Write','speak'=>'Speak'] as $key=>$label)
+                        <div class="form-check form-check-inline">
+                            <input type="checkbox" name="languages[{{ $i }}][{{ $key }}]" value="1" {{ $lang[$key]?'checked':'' }}>
+                            <label>{{ $label }}</label>
+                        </div>
+                    @endforeach
+                </div>
             </div>
         </div>
-    </div>
     @endforeach
 
     {{-- Extra Languages --}}
@@ -104,84 +102,75 @@
         @php $index = $i + count($defaultLangs); @endphp
         <div class="card language-card">
             <div class="card-body d-flex flex-wrap align-items-center justify-content-between gap-3">
-                <div class="col-md-3 mb-2 mb-md-0">
-                    <label class="form-label">Language *</label>
+                <div class="col-md-3">
                     <input type="text" class="form-control" name="languages[{{ $index }}][language]" value="{{ $lang['language'] }}" required>
-                    <div class="invalid-feedback">Language required</div>
                 </div>
                 <div class="col-md-7 d-flex gap-3 flex-wrap">
-                    @foreach(['read'=>'Read', 'write'=>'Write', 'speak'=>'Speak'] as $key=>$label)
+                    @foreach(['read'=>'Read','write'=>'Write','speak'=>'Speak'] as $key=>$label)
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" name="languages[{{ $index }}][{{ $key }}]" value="1" {{ $lang[$key] ? 'checked' : '' }}>
-                            <label class="form-check-label">{{ $label }}</label>
+                            <input type="checkbox" name="languages[{{ $index }}][{{ $key }}]" value="1" {{ $lang[$key]?'checked':'' }}>
+                            <label>{{ $label }}</label>
                         </div>
                     @endforeach
                 </div>
-                <div class="col-md-2 d-flex justify-content-end">
-                    <button type="button" class="btn btn-outline-danger btn-sm remove-row">
-                        <i class="bi bi-trash me-1"></i> Remove
-                    </button>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-outline-danger btn-sm remove-row">Remove</button>
                 </div>
             </div>
         </div>
     @endforeach
 
-    {{-- Add Button --}}
+    {{-- Add Language Button --}}
     <div class="mb-3 d-flex justify-content-end">
-        <button type="button" class="btn btn-outline-primary btn-sm d-flex align-items-center add-language-btn" data-target="#languagesRepeater">
-            <i class="bi bi-plus-lg me-1"></i> Add Language
-        </button>
+        <button type="button" class="btn btn-outline-primary btn-sm add-language-btn" data-target="#languagesRepeater">Add Language</button>
     </div>
 </div>
 
-{{-- Template --}}
 <template id="languageTemplate">
     <div class="card language-card">
         <div class="card-body d-flex flex-wrap align-items-center justify-content-between gap-3">
-            <div class="col-md-3 mb-2 mb-md-0">
-                <label class="form-label">Language *</label>
+            <div class="col-md-3">
                 <input type="text" class="form-control" name="languages[new][language]" required>
-                <div class="invalid-feedback">Language required</div>
             </div>
             <div class="col-md-7 d-flex gap-3 flex-wrap">
-                @foreach(['read'=>'Read', 'write'=>'Write', 'speak'=>'Speak'] as $key=>$label)
+                @foreach(['read'=>'Read','write'=>'Write','speak'=>'Speak'] as $key=>$label)
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" name="languages[new][{{ $key }}]" value="1">
-                        <label class="form-check-label">{{ $label }}</label>
+                        <input type="checkbox" name="languages[new][{{ $key }}]" value="1">
+                        <label>{{ $label }}</label>
                     </div>
                 @endforeach
             </div>
-            <div class="col-md-2 d-flex justify-content-end">
-                <button type="button" class="btn btn-outline-danger btn-sm remove-row d-flex align-items-center">
-                    <i class="bi bi-trash me-1"></i> Remove
-                </button>
+            <div class="col-md-2">
+                <button type="button" class="btn btn-outline-danger btn-sm remove-row">Remove</button>
             </div>
         </div>
     </div>
 </template>
 
+{{-- =================================================== --}}
+{{-- JS for dynamic add/remove (all repeaters will use same logic) --}}
 <script>
+let langIndex = {{ count($defaultLangs) + count($extraLangs) }};
+
 document.addEventListener("click", function(e) {
-    if (e.target.classList.contains("add-language-btn")) {
+    // Add Language
+    if(e.target.classList.contains("add-language-btn")){
         const container = document.querySelector(e.target.dataset.target);
         const template = document.querySelector("#languageTemplate");
         const newRow = template.content.cloneNode(true);
+
+        // Update input names with dynamic index
+        newRow.querySelectorAll("input").forEach(input=>{
+            input.name = input.name.replace("new", langIndex);
+        });
+
         container.appendChild(newRow);
+        langIndex++;
     }
-    if (e.target.classList.contains("remove-row")) {
+
+    // Remove row
+    if(e.target.classList.contains("remove-row")){
         e.target.closest(".language-card").remove();
     }
 });
-
-// Bootstrap form validation
-// const forms = document.querySelectorAll('.app-form');
-// Array.from(forms).forEach(form => {
-//     form.addEventListener('submit', function(event) {
-//         if (!form.checkValidity()) {
-//             event.preventDefault();
-//             event.stopPropagation();
-//         }
-//         form.classList.add('was-validated');
-//     });
-// });
 </script>

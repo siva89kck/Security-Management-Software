@@ -131,82 +131,42 @@
 
 <script>
 (function(){
-    // masters array with sizes array
     const masters = @json($masters);
-    const existingItems = @json(old('items', isset($purchase) ? $purchase->items->toArray() : []));
     let rowIndex = 0;
 
-    function newRow(idx, itemData = null){
-        const tr = document.createElement('tr');
+    function newRow(idx){
+    const tr = document.createElement('tr');
 
-        const firstId = masters.length > 0 ? masters[0].id : '';
-        const firstPrice = masters.length > 0 ? masters[0].price : '';
-        const firstSizes = masters.length > 0 ? masters[0].sizes || [] : [];
+    // first record defaults
+    const firstId = masters.length > 0 ? masters[0].id : '';
+    const firstPrice = masters.length > 0 ? masters[0].price : '';
+    const firstSize = masters.length > 0 && masters[0].sizes?.length ? masters[0].sizes[0] : '';
 
-        tr.innerHTML = `
-            <td>
-                <select name="items[${idx}][uniform_master_id]" class="form-control item-select" required>
-                    <option value="">--select--</option>
-                    ${masters.map(m=>`<option value="${m.id}" data-price="${m.price}" data-sizes='${JSON.stringify(m.sizes||[])}'>${m.name}</option>`).join('')}
-                </select>
-            </td>
-            <td>
-                <select name="items[${idx}][size]" class="form-control size-select" required>
-                    <option value="">--select--</option>
-                </select>
-            </td>
-            <td><input type="number" name="items[${idx}][quantity]" class="form-control qty" value="1" min="1"></td>
-            <td><input type="number" step="0.01" name="items[${idx}][price]" class="form-control price" value=""></td>
-            <td class="total-cell">0</td>
-            <td><button type="button" class="btn btn-sm btn-danger remove">x</button></td>
-        `;
+    tr.innerHTML = `
+        <td>
+            <select name="items[${idx}][uniform_master_id]"
+                    class="form-control item-select" required>
+                ${masters.map((m,i)=>
+                  `<option value="${m.id}"
+                    data-price="${m.price}"
+                    data-sizes='${JSON.stringify(m.sizes||[])}'
+                    ${i===0?'selected':''}>${m.name}</option>`).join('')}
+            </select>
+        </td>
+        <td>
+            <input type="text" name="items[${idx}][size]"
+                   class="form-control size-input"
+                   value="${firstSize}" required>
+        </td>
+        <td><input type="number" name="items[${idx}][quantity]" class="form-control qty" value="1" min="1"></td>
+        <td><input type="number" step="0.01" name="items[${idx}][price]" class="form-control price" value="${firstPrice}"></td>
+        <td class="total-cell">${(1*firstPrice).toFixed(2)}</td>
+        <td><button type="button" class="btn btn-sm btn-danger remove">x</button></td>
+    `;
 
-        setTimeout(()=>{
-            const sel = tr.querySelector('.item-select');
-            const sizeSel = tr.querySelector('.size-select');
+    return tr;
+}
 
-            let selectedId = firstId;
-            let selectedPrice = firstPrice;
-            let selectedSize = firstSizes.length ? firstSizes[0] : '';
-            let qty = 1;
-
-            if(itemData){
-                selectedId = itemData.uniform_master_id;
-                selectedPrice = itemData.price;
-                selectedSize = itemData.size;
-                qty = itemData.quantity;
-            }
-
-            sel.value = selectedId;
-            tr.querySelector('.price').value = selectedPrice;
-            tr.querySelector('.qty').value = qty;
-
-            // populate size dropdown
-            const itemOpt = sel.selectedOptions[0];
-            const sizes = JSON.parse(itemOpt.dataset.sizes || '[]');
-            sizeSel.innerHTML = '<option value="">--select--</option>';
-            sizes.forEach(sz=>{
-                const so = document.createElement('option');
-                so.value = sz;
-                so.textContent = sz;
-                sizeSel.appendChild(so);
-            });
-            if(selectedSize) sizeSel.value = selectedSize;
-
-            tr.querySelector('.total-cell').textContent = (qty * selectedPrice).toFixed(2);
-
-        },0);
-
-        return tr;
-    }
-
-    // Render existing items
-    if(existingItems.length){
-        existingItems.forEach(item=>{
-            document.querySelector('#items-table tbody').appendChild(newRow(rowIndex, item));
-            rowIndex++;
-        });
-    }
 
     // Add row
     document.getElementById('add-row').addEventListener('click', ()=>{
@@ -231,25 +191,22 @@
         }
     });
 
-    // Item change → auto price & size update
+    // Item change → auto price + size update
     document.addEventListener('change', function(e){
-        const tr = e.target.closest('tr');
         if(e.target.classList.contains('item-select')){
             const opt = e.target.selectedOptions[0];
             const price = parseFloat(opt.dataset.price) || 0;
+            const sizes = JSON.parse(opt.dataset.sizes || '[]');
+
+            const tr = e.target.closest('tr');
             tr.querySelector('.price').value = price;
 
-            // populate size dropdown
-            const sizes = JSON.parse(opt.dataset.sizes || '[]');
-            const sizeSel = tr.querySelector('.size-select');
-            sizeSel.innerHTML = '<option value="">--select--</option>';
-            sizes.forEach(sz=>{
-                const so = document.createElement('option');
-                so.value = sz;
-                so.textContent = sz;
-                sizeSel.appendChild(so);
-            });
-            if(sizes.length) sizeSel.value = sizes[0];
+            // size box auto fill with first size
+            if(sizes.length){
+                tr.querySelector('.size-input').value = sizes[0];
+            } else {
+                tr.querySelector('.size-input').value = '';
+            }
 
             const qty = parseFloat(tr.querySelector('.qty').value) || 0;
             tr.querySelector('.total-cell').textContent = (qty * price).toFixed(2);
@@ -257,6 +214,7 @@
     });
 
 })();
+
 </script>
 
 @endsection

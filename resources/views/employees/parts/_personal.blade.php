@@ -84,19 +84,19 @@
         </div>
         <div class="col-md-6">
             <label class="form-label">Mobile <span class="text-danger">*</span></label>
-            <input type="text" name="mobile" class="form-control"
-                   value="{{ old('mobile', $employee->mobile ?? '') }}" required>
+            <input type="number" name="mobile" class="form-control"
+                   value="{{ old('mobile', $employee->mobile ?? '') }}" required pattern="^[0-9]{10}$" title="Please enter a valid 10-digit mobile number.">
                    <div class="invalid-feedback">Please enter mobile number.</div>
         </div>
         <div class="col-md-6">
             <label class="form-label">Alt Mobile</label>
-            <input type="text" name="alt_mobile" class="form-control"
-                   value="{{ old('alt_mobile', $employee->alt_mobile ?? '') }}">
+            <input type="number" name="alt_mobile" class="form-control"
+                   value="{{ old('alt_mobile', $employee->alt_mobile ?? '') }}" pattern="^[0-9]{10}$" title="Please enter a valid 10-digit mobile number.">
         </div>
         <div class="col-md-6">
             <label class="form-label">Phone</label>
-            <input type="text" name="phone" class="form-control"
-                   value="{{ old('phone', $employee->phone ?? '') }}">
+            <input type="number" name="phone" class="form-control"
+                   value="{{ old('phone', $employee->phone ?? '') }}" pattern="^[0-9]{10}$" title="Please enter a valid 10-digit mobile number.">
         </div>
         <div class="col-md-6">
             <label class="form-label">Nationality</label>

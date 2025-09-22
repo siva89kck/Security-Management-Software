@@ -139,8 +139,6 @@
 
     function newRow(idx) {
         const defaultItem = masters[0];
-        const sizes = defaultItem.size ? defaultItem.size.split(',') : [];
-        const sizeOptions = sizes.map(s => `<option value="${s.trim()}">${s.trim()}</option>`).join('');
 
         const tr = document.createElement('tr');
         tr.innerHTML = `
@@ -151,10 +149,7 @@
                 </select>
             </td>
             <td>
-                <select name="items[${idx}][size]" class="form-select size-select" required>
-                    <option value="">-- Select Size --</option>
-                    ${sizeOptions}
-                </select>
+                <input type="text" name="items[${idx}][size]" class="form-control size-input" value="${defaultItem.size ? defaultItem.size.split(',')[0] : ''}" required>
             </td>
             <td>
                 <input type="number" name="items[${idx}][quantity]" class="form-control qty" value="1" min="1" required>
@@ -188,25 +183,21 @@
         }
     });
 
-    // change item → price + sizes update + auto select first size
+    // change item → price update only
     document.addEventListener('change', e => {
         if (e.target.classList.contains('item-select')) {
             const opt = e.target.selectedOptions[0];
             const price = parseFloat(opt.dataset.price) || 0;
-            const sizes = opt.dataset.size ? opt.dataset.size.split(',') : [];
 
             const tr = e.target.closest('tr');
             tr.querySelector('.price').value = price;
             const qty = parseFloat(tr.querySelector('.qty').value) || 0;
             tr.querySelector('.total-cell').textContent = (qty * price).toFixed(2);
 
-            // populate size dropdown
-            const sizeSelect = tr.querySelector('.size-select');
-            sizeSelect.innerHTML = `<option value="">-- Select Size --</option>` +
-                sizes.map(s => `<option value="${s.trim()}">${s.trim()}</option>`).join('');
-
-            // auto-select first size if available
-            if (sizes.length > 0) sizeSelect.value = sizes[0].trim();
+            // update size text input with first size value (if available)
+            const sizeInput = tr.querySelector('.size-input');
+            const sizes = opt.dataset.size ? opt.dataset.size.split(',') : [];
+            sizeInput.value = sizes.length > 0 ? sizes[0].trim() : '';
         }
     });
 
@@ -216,5 +207,6 @@
         rowIndex++;
     });
 })();
+
 </script>
 @endsection

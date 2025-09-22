@@ -73,35 +73,23 @@
                     <h5 class="section-title">Edit Uniform Details</h5>
 
                     <div class="row g-3">
-                        <!-- Uniform Name -->
+                        <!-- Uniform Name Textbox -->
                         <div class="col-md-6">
                             <div class="detail-card">
                                 <label class="label">Uniform Name <span class="text-danger">*</span></label>
-                                <select name="name" id="uniformType" class="form-select" required>
-                                    <option value="">Select Type</option>
-                                    <option value="Shirt" {{ old('name', $master->name) == 'Shirt' ? 'selected' : '' }}>Shirt</option>
-                                    <option value="Shirt Full" {{ old('name', $master->name) == 'Shirt Full' ? 'selected' : '' }}>Shirt Full</option>
-                                    <option value="Shirt Half" {{ old('name', $master->name) == 'Shirt Half' ? 'selected' : '' }}>Shirt Half</option>
-                                    <option value="Short" {{ old('name', $master->name) == 'Short' ? 'selected' : '' }}>Short</option>
-                                    <option value="Pant" {{ old('name', $master->name) == 'Pant' ? 'selected' : '' }}>Pant</option>
-                                    <option value="Cap" {{ old('name', $master->name) == 'Cap' ? 'selected' : '' }}>Cap</option>
-                                    <option value="Shoes" {{ old('name', $master->name) == 'Shoes' ? 'selected' : '' }}>Shoes</option>
-                                    <option value="Shoes Black" {{ old('name', $master->name) == 'Shoes Black' ? 'selected' : '' }}>Shoes Black</option>
-                                    <option value="Shoes White" {{ old('name', $master->name) == 'Shoes White' ? 'selected' : '' }}>Shoes White</option>
-                                </select>
-                                <div class="invalid-feedback">Please select uniform name.</div>
+                                <input type="text" name="name" class="form-control"
+                                       value="{{ old('name', $master->name) }}" required>
+                                <div class="invalid-feedback">Please enter uniform name.</div>
                             </div>
                         </div>
 
-                        <!-- Size Dropdown -->
+                        <!-- Size Textbox -->
                         <div class="col-md-6">
                             <div class="detail-card">
                                 <label class="label">Size <span class="text-danger">*</span></label>
-                                <select name="size" id="sizeDropdown" class="form-select" required>
-                                    <option value="">Select Size</option>
-                                    {{-- JS will populate --}}
-                                </select>
-                                <div class="invalid-feedback">Please select size.</div>
+                                <input type="text" name="size" class="form-control"
+                                       value="{{ old('size', $master->size) }}" required>
+                                <div class="invalid-feedback">Please enter size.</div>
                             </div>
                         </div>
 
@@ -109,7 +97,8 @@
                         <div class="col-md-6">
                             <div class="detail-card">
                                 <label class="label">Price</label>
-                                <input type="number" step="0.01" name="price" class="form-control" value="{{ old('price', $master->price) }}">
+                                <input type="number" step="0.01" name="price" class="form-control"
+                                       value="{{ old('price', $master->price) }}">
                                 <div class="invalid-feedback">Please enter price.</div>
                             </div>
                         </div>
@@ -118,7 +107,8 @@
                         <div class="col-md-6">
                             <div class="detail-card">
                                 <label class="label">Description</label>
-                                <input type="text" name="description" class="form-control" value="{{ old('description', $master->description) }}">
+                                <input type="text" name="description" class="form-control"
+                                       value="{{ old('description', $master->description) }}">
                             </div>
                         </div>
                     </div>
@@ -135,68 +125,4 @@
         </div>
     </div>
 </form>
-
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    // Bootstrap validation
-    const forms = document.querySelectorAll('.app-form');
-    Array.from(forms).forEach(function(form) {
-        form.addEventListener('submit', function(event) {
-            if (!form.checkValidity()) {
-                event.preventDefault();
-                event.stopPropagation();
-            }
-            form.classList.add('was-validated');
-        }, false);
-    });
-
-    // 🔹 Master Size Groups
-    const sizeGroups = {
-        'shirt': ['28','30','32','34','36','38','40','42','44','46','48','50'],
-        'pant': ['28','30','32','34','36','38','40','42','44','46','48','50'],
-        'cap': ['Small','Medium','Large'],
-        'shoes': ['5','6','7','8','9','10','11']
-    };
-
-    // Function that maps which type to which group
-    function getSizeArray(type){
-        const lower = type.toLowerCase();
-
-        if(lower.startsWith('shirt')) return sizeGroups['shirt'];   // Shirt, Shirt Full, Shirt Half
-        if(lower.startsWith('pant')) return sizeGroups['pant'];     // Pant variations
-        if(lower.startsWith('cap')) return sizeGroups['cap'];       // Cap variations
-        if(lower.startsWith('shoe')) return sizeGroups['shoes'];    // Shoes Black, Shoes White etc.
-
-        return []; // fallback
-    }
-
-    const uniformType = document.getElementById('uniformType');
-    const sizeDropdown = document.getElementById('sizeDropdown');
-
-    function populateSizes(type, selectedSize = null){
-        sizeDropdown.innerHTML = '<option value="">Select Size</option>';
-        const arr = getSizeArray(type);
-        arr.forEach(function(size){
-            const opt = document.createElement('option');
-            opt.value = size;
-            opt.textContent = size;
-            // selected logic (edit page)
-            if(selectedSize && selectedSize == size) opt.selected = true;
-            sizeDropdown.appendChild(opt);
-        });
-    }
-
-    // on load, populate size for existing value
-    const oldSize = "{{ old('size', $master->size) }}";
-    if(uniformType.value){
-        populateSizes(uniformType.value, oldSize);
-    }
-
-    // on change
-    uniformType.addEventListener('change', function(){
-        populateSizes(this.value);
-    });
-});
-</script>
-
 @endsection

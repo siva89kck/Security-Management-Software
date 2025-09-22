@@ -64,34 +64,23 @@
                     <h5 class="section-title">Add New Uniform Details</h5>
 
                     <div class="row g-3">
-                        <!-- Uniform Type -->
+                        <!-- Uniform Name Textbox -->
                         <div class="col-md-6">
                             <div class="detail-card">
                                 <label class="label">Uniform Name <span class="text-danger">*</span></label>
-                                <select name="name" id="uniformType" class="form-select" required>
-                                    <option value="">--</option>
-                                    <option value="Shirt" {{ old('name') == 'Shirt' ? 'selected' : '' }}>Shirt</option>
-                                    <option value="Shirt Full" {{ old('name') == 'Shirt Full' ? 'selected' : '' }}>Shirt Full</option>
-                                    <option value="Shirt Half" {{ old('name') == 'Shirt Half' ? 'selected' : '' }}>Shirt Half</option>
-                                    <option value="Short" {{ old('name') == 'Short' ? 'selected' : '' }}>Short</option>
-                                    <option value="Pant" {{ old('name') == 'Pant' ? 'selected' : '' }}>Pant</option>
-                                    <option value="Cap" {{ old('name') == 'Cap' ? 'selected' : '' }}>Cap</option>
-                                    <option value="Shoes" {{ old('name') == 'Shoes' ? 'selected' : '' }}>Shoes</option>
-                                    <option value="Shoes Black" {{ old('name') == 'Shoes Black' ? 'selected' : '' }}>Shoes Black</option>
-                                    <option value="Shoes White" {{ old('name') == 'Shoes White' ? 'selected' : '' }}>Shoes White</option>
-                                </select>
-                                <div class="invalid-feedback">Please select uniform name.</div>
+                                <input type="text" name="name" class="form-control"
+                                       value="{{ old('name') }}" required>
+                                <div class="invalid-feedback">Please enter uniform name.</div>
                             </div>
                         </div>
 
-                        <!-- Size Dropdown -->
+                        <!-- Size Textbox -->
                         <div class="col-md-6">
                             <div class="detail-card">
                                 <label class="label">Size <span class="text-danger">*</span></label>
-                                <select name="size" id="sizeDropdown" class="form-select" required>
-                                    <option value="">Select Size</option>
-                                </select>
-                                <div class="invalid-feedback">Please select size.</div>
+                                <input type="text" name="size" class="form-control"
+                                       value="{{ old('size') }}" required>
+                                <div class="invalid-feedback">Please enter size.</div>
                             </div>
                         </div>
 
@@ -124,65 +113,4 @@
         </div>
     </div>
 </form>
-
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    // Bootstrap validation
-    const forms = document.querySelectorAll('.app-form');
-    Array.from(forms).forEach(form=>{
-        form.addEventListener('submit', function(event) {
-            if (!form.checkValidity()) {
-                event.preventDefault();
-                event.stopPropagation();
-            }
-            form.classList.add('was-validated');
-        });
-    });
-
-    // 🔹 Master Size Groups
-    const sizeGroups = {
-        'shirt': ['28','30','32','34','36','38','40','42','44','46','48','50'],
-        'pant': ['28','30','32','34','36','38','40','42','44','46','48','50'],
-        'cap': ['Small','Medium','Large'],
-        'shoes': ['5','6','7','8','9','10','11']
-    };
-
-    // Function that maps which type to which group
-    function getSizeArray(type){
-        const lower = type.toLowerCase();
-
-        if(lower.startsWith('shirt')) return sizeGroups['shirt'];   // Shirt, Shirt Full, Shirt Half
-        if(lower.startsWith('pant')) return sizeGroups['pant'];     // Pant variations
-        if(lower.startsWith('cap')) return sizeGroups['cap'];       // Cap variations
-        if(lower.startsWith('shoe')) return sizeGroups['shoes'];    // Shoes Black, Shoes White etc.
-
-        return []; // fallback
-    }
-
-    const uniformType = document.getElementById('uniformType');
-    const sizeDropdown = document.getElementById('sizeDropdown');
-
-    function populateSizes(type){
-        sizeDropdown.innerHTML = '<option value="">Select Size</option>';
-        const arr = getSizeArray(type);
-        arr.forEach(size=>{
-            const opt = document.createElement('option');
-            opt.value = size;
-            opt.textContent = size;
-            if ("{{ old('size') }}" === size) opt.selected = true;
-            sizeDropdown.appendChild(opt);
-        });
-    }
-
-    // load old values if any
-    if(uniformType.value){
-        populateSizes(uniformType.value);
-    }
-
-    uniformType.addEventListener('change',function(){
-        populateSizes(this.value);
-    });
-});
-</script>
-
 @endsection

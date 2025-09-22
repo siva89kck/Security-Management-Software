@@ -1,25 +1,54 @@
+<style>
+.experience-form-repeater .repeater-item {
+    background: #f9fafd;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    transition: all 0.2s;
+}
+
+.experience-form-repeater .repeater-item:hover {
+    box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+}
+
+.experience-form-repeater .form-control,
+.experience-form-repeater .form-select {
+    border-radius: 8px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.experience-form-repeater .form-control:focus,
+.experience-form-repeater .form-select:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13,110,253,.25);
+}
+
+.experience-form-repeater .btn {
+    border-radius: 50px;
+    padding: 4px 12px;
+    min-width: 140px;
+}
+
+.experience-form-repeater .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+</style>
 <h6 class="mt-3 mb-2">Experiences</h6>
 
 <div class="experience-form-repeater mt-3" id="expRepeater">
 
     @php
+    // Edit page-ல் $employee இருக்கலாம், create page-ல் null
+    if(old('experiences')) {
         $experiences = old('experiences');
-
-        if (empty($experiences) && isset($employee) && $employee->experiences->count() > 0) {
-            $experiences = $employee->experiences->map(function($exp) {
-                return [
-                    'company_name' => $exp->company_name,
-                    'designation'  => $exp->designation,
-                    'experience'   => $exp->experience,
-                ];
-            })->toArray();
-        }
-
-        // ✅ Always ensure at least one empty row
-        if (empty($experiences)) {
-            $experiences = [['company_name'=>'','designation'=>'','experience'=>'']];
-        }
-    @endphp
+    } elseif(!empty($employee) && $employee->experiences) {
+        $experiences = $employee->experiences->toArray();
+    } else {
+        $experiences = [['company_name'=>'','designation'=>'','experience'=>'']];
+    }
+@endphp
 
     @foreach($experiences as $i => $exp)
     <div class="row g-3 align-items-end repeater-item">
@@ -58,7 +87,6 @@
     @endforeach
 </div>
 
-
 <template id="expTemplate">
     <div class="row g-3 align-items-end repeater-item">
         <div class="col-md-6">
@@ -70,10 +98,10 @@
             <input type="text" name="experiences[__INDEX__][designation]" class="form-control" >
         </div>
         <div class="col-md-6">
-            <label class="form-label">Experience (Years) </label>
+            <label class="form-label">Experience (Years)</label>
             <select name="experiences[__INDEX__][experience]" class="form-select" >
                 <option value="">Select Years</option>
-                @for($y = 1; $y <= 10; $y++)
+                @for($y = 0; $y <= 10; $y++)
                     <option value="{{ $y }}">{{ $y }}</option>
                 @endfor
             </select>
@@ -85,44 +113,6 @@
         </div>
     </div>
 </template>
-
-<style>
-.experience-form-repeater .repeater-item {
-    background: #f9fafd;
-    padding: 15px;
-    border-radius: 10px;
-    margin-bottom: 12px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-    transition: all 0.2s;
-}
-
-.experience-form-repeater .repeater-item:hover {
-    box-shadow: 0 4px 10px rgba(0,0,0,0.12);
-}
-
-.experience-form-repeater .form-control,
-.experience-form-repeater .form-select {
-    border-radius: 8px;
-    transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.experience-form-repeater .form-control:focus,
-.experience-form-repeater .form-select:focus {
-    border-color: #0d6efd;
-    box-shadow: 0 0 0 0.2rem rgba(13,110,253,.25);
-}
-
-.experience-form-repeater .btn {
-    border-radius: 50px;
-    padding: 4px 12px;
-    min-width: 140px;
-}
-
-.experience-form-repeater .btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-}
-</style>
 
 <script>
 document.addEventListener('click', function(e) {
@@ -144,5 +134,4 @@ document.addEventListener('click', function(e) {
         return;
     }
 });
-
 </script>

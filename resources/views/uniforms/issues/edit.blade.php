@@ -143,11 +143,15 @@
                                             @endforeach
                                         </select>
                                     </td>
-                                    <td>
+                                    {{-- <td>
                                         <select name="items[{{ $index }}][size]" class="form-select size-select" required>
                                             <option value="{{ $item->size }}" selected>{{ $item->size }}</option>
                                         </select>
+                                    </td> --}}
+                                    <td>
+                                    <input type="text" name="items[{{ $index }}][size]" class="form-control size-input" value="{{ $item->size }}" required>
                                     </td>
+
                                     <td><input type="number" name="items[{{ $index }}][quantity]" class="form-control qty" value="{{ $item->quantity }}" min="1" required></td>
                                     <td><input type="number" step="0.01" name="items[{{ $index }}][price]" class="form-control price" value="{{ $item->price }}"></td>
                                     <td class="total-cell">{{ number_format($item->total, 2) }}</td>
@@ -176,10 +180,7 @@
 
     // புதிய வரிசையை உருவாக்கும் ஃபங்ஷன்
     function newRow(idx) {
-        // முதல் பொருளை default ஆக எடுக்கவும்
         const defaultItem = masters[0] || {};
-        const sizes = defaultItem.size ? defaultItem.size.split(',') : [];
-        const sizeOptions = sizes.map(s => `<option value="${s.trim()}">${s.trim()}</option>`).join('');
         const price = defaultItem.price ? parseFloat(defaultItem.price) || 0 : 0;
 
         const tr = document.createElement('tr');
@@ -191,10 +192,7 @@
                 </select>
             </td>
             <td>
-                <select name="items[${idx}][size]" class="form-select size-select" required>
-                    <option value="">-- Select Size --</option>
-                    ${sizeOptions}
-                </select>
+                <input type="text" name="items[${idx}][size]" class="form-control size-input" value="${defaultItem.size ? defaultItem.size.split(',')[0] : ''}" required>
             </td>
             <td>
                 <input type="number" name="items[${idx}][quantity]" class="form-control qty" value="1" min="1" required>
@@ -208,27 +206,13 @@
         return tr;
     }
 
-    // சைஸ் ஃபீல்டை அப்டேட் செய்யும் ஃபங்ஷன்
-    function updateSizes(itemSelect, currentSize = null) {
+    // item change → price & size update
+    function updateSizeInput(itemSelect) {
         const tr = itemSelect.closest('tr');
-        const sizeSelect = tr.querySelector('.size-select');
+        const sizeInput = tr.querySelector('.size-input');
         const selectedOption = itemSelect.selectedOptions[0];
-
-        sizeSelect.innerHTML = '<option value="">-- Select Size --</option>';
-
-        if (selectedOption && selectedOption.dataset.size) {
-            const sizes = selectedOption.dataset.size.split(',');
-            sizes.forEach(s => {
-                const trimmedSize = s.trim();
-                const option = document.createElement('option');
-                option.value = trimmedSize;
-                option.textContent = trimmedSize;
-                if (currentSize && trimmedSize === currentSize) {
-                    option.selected = true;
-                }
-                sizeSelect.appendChild(option);
-            });
-        }
+        const sizes = selectedOption && selectedOption.dataset.size ? selectedOption.dataset.size.split(',') : [];
+        sizeInput.value = sizes.length > 0 ? sizes[0].trim() : '';
     }
 
     document.addEventListener('DOMContentLoaded', function() {
@@ -262,16 +246,18 @@
                 tr.querySelector('.price').value = price;
                 const qty = parseFloat(tr.querySelector('.qty').value) || 0;
                 tr.querySelector('.total-cell').textContent = (qty * price).toFixed(2);
-                updateSizes(e.target);
+
+                updateSizeInput(e.target);
             }
         });
 
+        // first row update
         tbody.querySelectorAll('tr').forEach(tr => {
             const itemSelect = tr.querySelector('.item-select');
-            const existingSize = tr.querySelector('.size-select').value;
-            updateSizes(itemSelect, existingSize);
+            updateSizeInput(itemSelect);
         });
     });
 })();
+
 </script>
 @endsection

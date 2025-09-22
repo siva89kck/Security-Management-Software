@@ -96,7 +96,9 @@
                                         <div class="tab-pane fade" id="tab-address">@include('employees.parts._address')</div>
                                         <div class="tab-pane fade" id="tab-languages">@include('employees.parts._languages')</div>
                                         <div class="tab-pane fade" id="tab-family">@include('employees.parts._family')</div>
-                                        <div class="tab-pane fade" id="tab-experiences">@include('employees.parts._experiences')</div>
+                                        <div class="tab-pane fade" id="tab-experiences">
+    @include('employees.parts._experiences')
+</div>
                                         <div class="tab-pane fade" id="tab-payroll">@include('employees.parts._payroll')</div>
                                         <div class="tab-pane fade" id="tab-banks">@include('employees.parts._banks')</div>
                                         <div class="tab-pane fade" id="tab-enclosures">@include('employees.parts._enclosures')</div>

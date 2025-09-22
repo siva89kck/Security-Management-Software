@@ -1,121 +1,3 @@
-<div class="family-form-repeater mt-3" id="familyRepeater">
-
-    @php
-        $familyMembers = old('family_members');
-
-        if (empty($familyMembers) && isset($employee) && $employee->familyMembers->count() > 0) {
-            $familyMembers = $employee->familyMembers->map(function($m) {
-                return [
-                    'name' => $m->name,
-                    'dob'  => $m->dob ? \Carbon\Carbon::parse($m->dob)->format('Y-m-d') : '',
-                    'age' => $m->age,
-                    'relationship' => $m->relationship,
-                    'marital_status'=> $m->marital_status,
-                    'mobile_number' => $m->mobile_number ?? '',
-                ];
-            })->toArray();
-        }
-
-        // ✅ Always ensure at least one empty row
-        if (empty($familyMembers)) {
-            $familyMembers = [['name'=>'','dob'=>'','age'=>'','relationship'=>'','marital_status'=>'','mobile_number'=>'']];
-        }
-    @endphp
-
-    @foreach ($familyMembers as $i => $member)
-        <div class="row g-3 align-items-end repeater-item">
-            <div class="col-md-6">
-                <label class="form-label">Name</label>
-                <input type="text" name="family_members[{{ $i }}][name]" value="{{ $member['name'] ?? '' }}" class="form-control" >
-            </div>
-
-            {{-- <div class="col-md-6">
-                <label class="form-label">DOB</label>
-                <input type="date" name="family_members[{{ $i }}][dob]" value="{{ $member['dob'] ?? '' }}" class="form-control dob-field">
-            </div> --}}
-
-            <div class="col-md-6">
-                <label class="form-label">Age</label>
-                <input type="number" name="family_members[{{ $i }}][age]" value="{{ $member['age'] ?? '' }}" class="form-control age-field">
-            </div>
-
-            <div class="col-md-6">
-                <label class="form-label">Relationship</label>
-                <input type="text" name="family_members[{{ $i }}][relationship]" value="{{ $member['relationship'] ?? '' }}" class="form-control" >
-            </div>
-
-            {{-- <div class="col-md-6">
-                <label class="form-label">Marital Status</label>
-                <select name="family_members[{{ $i }}][marital_status]" class="form-select" >
-                    <option value="">--Select--</option>
-                    <option value="Single" {{ ($member['marital_status'] ?? '') == 'Single' ? 'selected' : '' }}>Single</option>
-                    <option value="Married" {{ ($member['marital_status'] ?? '') == 'Married' ? 'selected' : '' }}>Married</option>
-                    <option value="Widow" {{ ($member['marital_status'] ?? '') == 'Widow' ? 'selected' : '' }}>Widow</option>
-                    <option value="Divorce" {{ ($member['marital_status'] ?? '') == 'Divorce' ? 'selected' : '' }}>Divorce</option>
-                </select>
-            </div> --}}
-
-            <div class="col-md-6">
-                <label class="form-label">Mobile Number</label>
-                <input type="text" name="family_members[{{ $i }}][mobile_number]" value="{{ $member['mobile_number'] ?? '' }}" class="form-control" >
-            </div>
-
-            <div class="col-12 d-flex justify-content-end">
-                @if ($i == 0)
-                    <button type="button" class="btn btn-outline-primary btn-sm add-family-row" data-target="#familyRepeater">
-                        <i class="bi bi-plus-lg me-1"></i> Add Family Member
-                    </button>
-                @else
-                    <button type="button" class="btn btn-outline-danger btn-sm family-remove-row">
-                        <i class="bi bi-trash me-1"></i> Remove
-                    </button>
-                @endif
-            </div>
-        </div>
-    @endforeach
-</div>
-
-<template id="familyTemplate">
-    <div class="row g-3 align-items-end repeater-item">
-        <div class="col-md-6">
-            <label class="form-label">Name</label>
-            <input type="text" name="family_members[__INDEX__][name]" class="form-control" >
-        </div>
-        {{-- <div class="col-md-6">
-            <label class="form-label">DOB</label>
-            <input type="date" name="family_members[__INDEX__][dob]" class="form-control dob-field">
-        </div> --}}
-        <div class="col-md-6">
-            <label class="form-label">Age</label>
-            <input type="number" name="family_members[__INDEX__][age]" class="form-control age-field">
-        </div>
-        <div class="col-md-6">
-            <label class="form-label">Relationship</label>
-            <input type="text" name="family_members[__INDEX__][relationship]" class="form-control" >
-        </div>
-        {{-- <div class="col-md-6">
-            <label class="form-label">Marital Status</label>
-            <select name="family_members[__INDEX__][marital_status]" class="form-select" >
-                <option value="">--Select--</option>
-                <option value="Single">Single</option>
-                <option value="Married">Married</option>
-                <option value="Widow">Widow</option>
-                <option value="Divorce">Divorce</option>
-            </select>
-        </div> --}}
-        <div class="col-md-6">
-            <label class="form-label">Mobile Number</label>
-            <input type="text" name="family_members[__INDEX__][mobile_number]" class="form-control" >
-        </div>
-        <div class="col-12 d-flex justify-content-end">
-            <button type="button" class="btn btn-outline-danger btn-sm family-remove-row">
-                <i class="bi bi-trash me-1"></i> Remove
-            </button>
-        </div>
-    </div>
-</template>
-
-
 <style>
 .family-form-repeater .repeater-item {
     background: #f9fafd;
@@ -154,28 +36,102 @@
 }
 </style>
 
+<div class="family-form-repeater mt-3" id="familyRepeater">
+
+    @php
+        $familyMembers = old('family_members');
+
+        if (empty($familyMembers) && isset($employee) && $employee->familyMembers->count() > 0) {
+            $familyMembers = $employee->familyMembers->map(function($m) {
+                return [
+                    'name' => $m->name,
+                    'dob'  => $m->dob ? \Carbon\Carbon::parse($m->dob)->format('Y-m-d') : '',
+                    'age' => $m->age,
+                    'relationship' => $m->relationship,
+                    'marital_status'=> $m->marital_status,
+                    'mobile_number' => $m->mobile_number ?? '',
+                    // 'issue' => $m->issue ?? '',          // New field
+                    // 'employee_code' => $m->employee_code ?? '', // Example employee-related field
+                ];
+            })->toArray();
+        }
+
+        if (empty($familyMembers)) {
+            $familyMembers = [['name'=>'','dob'=>'','age'=>'','relationship'=>'','marital_status'=>'','mobile_number'=>'','issue'=>'','employee_code'=>'']];
+        }
+    @endphp
+
+    @foreach ($familyMembers as $i => $member)
+        <div class="row g-3 align-items-end repeater-item">
+            <div class="col-md-6">
+                <label class="form-label">Name</label>
+                <input type="text" name="family_members[{{ $i }}][name]" value="{{ $member['name'] ?? '' }}" class="form-control" >
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Age</label>
+<input type="number" name="family_members[{{ $i }}][age]" value="{{ $member['age'] ?? '' }}" class="form-control">
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Relationship</label>
+                <input type="text" name="family_members[{{ $i }}][relationship]" value="{{ $member['relationship'] ?? '' }}" class="form-control" >
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Mobile Number</label>
+<input type="text" name="family_members[{{ $i }}][mobile_number]" value="{{ $member['mobile_number'] ?? '' }}" class="form-control">
+            </div>
+
+
+
+            <div class="col-12 d-flex justify-content-end">
+                @if ($i == 0)
+                    <button type="button" class="btn btn-outline-primary btn-sm add-family-row" data-target="#familyRepeater">
+                        <i class="bi bi-plus-lg me-1"></i> Add Family Member
+                    </button>
+                @else
+                    <button type="button" class="btn btn-outline-danger btn-sm family-remove-row">
+                        <i class="bi bi-trash me-1"></i> Remove
+                    </button>
+                @endif
+            </div>
+        </div>
+    @endforeach
+</div>
+
+<template id="familyTemplate">
+    <div class="row g-3 align-items-end repeater-item">
+        <div class="col-md-6">
+            <label class="form-label">Name</label>
+            <input type="text" name="family_members[__INDEX__][name]" class="form-control" >
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Age</label>
+            <input type="number" name="family_members[__INDEX__][age]" class="form-control age-field">
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Relationship</label>
+            <input type="text" name="family_members[__INDEX__][relationship]" class="form-control" >
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Mobile Number</label>
+            <input type="text" name="family_members[__INDEX__][mobile_number]" class="form-control" pattern="^[0-9]{10}$" title="Please enter a valid 10-digit mobile number.">
+        </div>
+
+        <div class="col-12 d-flex justify-content-end">
+            <button type="button" class="btn btn-outline-danger btn-sm family-remove-row">
+                <i class="bi bi-trash me-1"></i> Remove
+            </button>
+        </div>
+    </div>
+</template>
+
+
+
+
+
 <script>
-// document.addEventListener('DOMContentLoaded', function () {
-//     // Event delegation: listen for change on any DOB field inside #familyRepeater
-//     document.getElementById('familyRepeater').addEventListener('change', function (e) {
-//         if (e.target.classList.contains('dob-field')) {
-//             const dobInput = e.target;
-//             const ageInput = dobInput
-//                 .closest('.repeater-item')
-//                 .querySelector('.age-field');
-
-//             const dob = new Date(dobInput.value);
-//             if (!isNaN(dob)) {
-//                 const diff = new Date(Date.now() - dob.getTime());
-//                 const age = Math.abs(diff.getUTCFullYear() - 1970);
-//                 ageInput.value = age;
-//             } else {
-//                 ageInput.value = '';
-//             }
-//         }
-//     });
-// });
-
 // Add/Remove row handlers
 document.addEventListener('click', function(e) {
     // Add new family member row
