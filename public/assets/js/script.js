@@ -152,18 +152,18 @@ new SimpleBar(myElement, { autoHide: true });
 
 // Sidebar active class js
 $(function () {
-    let current = location.pathname;
-    console.log(current);
-
-    let index = current.lastIndexOf("/");
-    index = current.lastIndexOf("/", index - 1); // go one step back
-    current = current.substring(index + 1);
-
-    console.log(current);
+    // Get current path (last 2 segments)
+    let current = location.pathname.split("/").slice(-2).join("/");
 
     $(".main-nav li a").each(function () {
-        var $this = $(this);
-        if (current === $this.attr("href").split("/").pop()) {
+        let href = $(this).attr("href");
+
+        // Get last 2 segments from the link
+        let link = href.split("/").slice(-2).join("/");
+
+        if (current === link) {
+            let $this = $(this);
+
             if ($this.parent().parent().parent().hasClass("another-level")) {
                 $this
                     .parent()
@@ -175,6 +175,7 @@ $(function () {
                     .addClass("show")
                     .attr("aria-expanded", "true");
             }
+
             $this.parent().parent().parent().children().addClass("show");
             $this
                 .parent()
@@ -182,6 +183,7 @@ $(function () {
                 .parent()
                 .children()
                 .attr("aria-expanded", "true");
+
             $this.parent("li").addClass("active");
         }
     });
