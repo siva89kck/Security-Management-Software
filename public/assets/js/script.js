@@ -154,7 +154,8 @@ new SimpleBar(myElement, { autoHide: true });
 $(function () {
     let current = location.pathname;
     console.log(current + "=========");
-    current = current.substring(current.lastIndexOf("/") + 1);
+    current = current.substring(current.lastIndexOf("/") + 2);
+    console.log(current);
     $(".main-nav li a").each(function () {
         var $this = $(this);
         if (current === $this.attr("href").split("/").pop()) {
