@@ -151,21 +151,35 @@ var myElement = document.getElementById("app-simple-bar");
 new SimpleBar(myElement, { autoHide: true });
 
 // Sidebar active class js
-// $(function () {
-//   let current = location.pathname;
-//   current = current.substring((current.lastIndexOf('/')) + 1);
-//   $('.main-nav li a').each(function () {
-//     var $this = $(this);
-//     if (current === $this.attr("href").split('/').pop()) {
-//       if ($this.parent().parent().parent().hasClass("another-level")) {
-//         $this.parent().parent().parent().parent().closest('li').children().addClass('show').attr("aria-expanded", "true");
-//       }
-//       $this.parent().parent().parent().children().addClass('show');
-//       $this.parent().parent().parent().children().attr("aria-expanded", "true");
-//       $this.parent('li').addClass('active');
-//     }
-//   })
-// })
+$(function () {
+    let current = location.pathname;
+    console.log(current + "=========");
+    current = current.substring(current.lastIndexOf("/") + 1);
+    $(".main-nav li a").each(function () {
+        var $this = $(this);
+        if (current === $this.attr("href").split("/").pop()) {
+            if ($this.parent().parent().parent().hasClass("another-level")) {
+                $this
+                    .parent()
+                    .parent()
+                    .parent()
+                    .parent()
+                    .closest("li")
+                    .children()
+                    .addClass("show")
+                    .attr("aria-expanded", "true");
+            }
+            $this.parent().parent().parent().children().addClass("show");
+            $this
+                .parent()
+                .parent()
+                .parent()
+                .children()
+                .attr("aria-expanded", "true");
+            $this.parent("li").addClass("active");
+        }
+    });
+});
 
 // >>-- 07 Loader JS --<<
 $(".loader-wrapper").fadeOut("slow", function () {
