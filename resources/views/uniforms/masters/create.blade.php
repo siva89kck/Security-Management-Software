@@ -2,7 +2,6 @@
 
 @section('content')
 <style>
-    /* Card Design */
     .detail-card {
         background: #f9fafd;
         border-radius: 12px;
@@ -40,16 +39,13 @@
     }
 </style>
 
-<!-- Page Title & Breadcrumb -->
 <div class="row m-1">
     <div class="col-12">
         <h4 class="main-title">Uniform Details</h4>
         <ul class="app-line-breadcrumbs mb-3">
             <li>
                 <a href="{{ route('dashboard') }}" class="f-s-14 f-w-500">
-                    <span>
-                        <i class="ph-duotone ph-newspaper f-s-16"></i> Dashboard
-                    </span>
+                    <i class="ph-duotone ph-newspaper f-s-16"></i> Dashboard
                 </a>
             </li>
             <li class="active">
@@ -59,7 +55,6 @@
     </div>
 </div>
 
-<!-- Create Form -->
 <form action="{{ route('masters.store') }}" method="POST" class="app-form needs-validation" novalidate>
     @csrf
     <div class="row">
@@ -69,25 +64,21 @@
                     <h5 class="section-title">Add New Uniform Details</h5>
 
                     <div class="row g-3">
-                        <!-- Uniform Name -->
-                        {{-- <div class="col-md-6">
-                            <div class="detail-card">
-                                <label class="label">Uniform Name <span class="text-danger">*</span></label>
-                                <input type="text" name="name" class="form-control" value="{{ old('name') }}" required>
-                                <div class="invalid-feedback">Please enter uniform name.</div>
-                            </div>
-                        </div> --}}
-
                         <!-- Uniform Type -->
                         <div class="col-md-6">
                             <div class="detail-card">
                                 <label class="label">Uniform Name <span class="text-danger">*</span></label>
                                 <select name="name" id="uniformType" class="form-select" required>
-                                    <option value="">Select Type</option>
-                                    <option value="Shirt" {{ old('name')=='Shirt'?'selected':'' }}>Shirt</option>
-                                    <option value="Pant" {{ old('name')=='Pant'?'selected':'' }}>Pant</option>
-                                    <option value="Cap" {{ old('name')=='Cap'?'selected':'' }}>Cap</option>
-                                    <option value="Shoes" {{ old('name')=='Shoes'?'selected':'' }}>Shoes</option>
+                                    <option value="">--</option>
+                                    <option value="Shirt" {{ old('name') == 'Shirt' ? 'selected' : '' }}>Shirt</option>
+                                    <option value="Shirt Full" {{ old('name') == 'Shirt Full' ? 'selected' : '' }}>Shirt Full</option>
+                                    <option value="Shirt Half" {{ old('name') == 'Shirt Half' ? 'selected' : '' }}>Shirt Half</option>
+                                    <option value="Short" {{ old('name') == 'Short' ? 'selected' : '' }}>Short</option>
+                                    <option value="Pant" {{ old('name') == 'Pant' ? 'selected' : '' }}>Pant</option>
+                                    <option value="Cap" {{ old('name') == 'Cap' ? 'selected' : '' }}>Cap</option>
+                                    <option value="Shoes" {{ old('name') == 'Shoes' ? 'selected' : '' }}>Shoes</option>
+                                    <option value="Shoes Black" {{ old('name') == 'Shoes Black' ? 'selected' : '' }}>Shoes Black</option>
+                                    <option value="Shoes White" {{ old('name') == 'Shoes White' ? 'selected' : '' }}>Shoes White</option>
                                 </select>
                                 <div class="invalid-feedback">Please select uniform name.</div>
                             </div>
@@ -99,7 +90,6 @@
                                 <label class="label">Size <span class="text-danger">*</span></label>
                                 <select name="size" id="sizeDropdown" class="form-select" required>
                                     <option value="">Select Size</option>
-                                    {{-- options load by JS --}}
                                 </select>
                                 <div class="invalid-feedback">Please select size.</div>
                             </div>
@@ -110,7 +100,6 @@
                             <div class="detail-card">
                                 <label class="label">Price</label>
                                 <input type="number" step="0.01" name="price" class="form-control" value="{{ old('price') }}">
-                                <div class="invalid-feedback">Please enter price.</div>
                             </div>
                         </div>
 
@@ -140,50 +129,60 @@
 document.addEventListener('DOMContentLoaded', function () {
     // Bootstrap validation
     const forms = document.querySelectorAll('.app-form');
-    Array.from(forms).forEach(function(form) {
+    Array.from(forms).forEach(form=>{
         form.addEventListener('submit', function(event) {
             if (!form.checkValidity()) {
                 event.preventDefault();
                 event.stopPropagation();
             }
             form.classList.add('was-validated');
-        }, false);
+        });
     });
 
-    // size options based on type
-    const sizeOptions = {
-        Shirt: ['XS','S','M','L','XL','XXL'],
-        Pant: ['28','30','32','34','36','38','40'],
-        Cap: ['Small','Medium','Large'],
-        Shoes: ['5','6','7','8','9','10','11']
+    // 🔹 Master Size Groups
+    const sizeGroups = {
+        'shirt': ['28','30','32','34','36','38','40','42','44','46','48','50'],
+        'pant': ['28','30','32','34','36','38','40','42','44','46','48','50'],
+        'cap': ['Small','Medium','Large'],
+        'shoes': ['5','6','7','8','9','10','11']
     };
+
+    // Function that maps which type to which group
+    function getSizeArray(type){
+        const lower = type.toLowerCase();
+
+        if(lower.startsWith('shirt')) return sizeGroups['shirt'];   // Shirt, Shirt Full, Shirt Half
+        if(lower.startsWith('pant')) return sizeGroups['pant'];     // Pant variations
+        if(lower.startsWith('cap')) return sizeGroups['cap'];       // Cap variations
+        if(lower.startsWith('shoe')) return sizeGroups['shoes'];    // Shoes Black, Shoes White etc.
+
+        return []; // fallback
+    }
 
     const uniformType = document.getElementById('uniformType');
     const sizeDropdown = document.getElementById('sizeDropdown');
 
     function populateSizes(type){
         sizeDropdown.innerHTML = '<option value="">Select Size</option>';
-        if(sizeOptions[type]){
-            sizeOptions[type].forEach(function(size){
-                const opt = document.createElement('option');
-                opt.value = size;
-                opt.textContent = size;
-                // old value check
-                if ("{{ old('size') }}" === size) opt.selected = true;
-                sizeDropdown.appendChild(opt);
-            });
-        }
+        const arr = getSizeArray(type);
+        arr.forEach(size=>{
+            const opt = document.createElement('option');
+            opt.value = size;
+            opt.textContent = size;
+            if ("{{ old('size') }}" === size) opt.selected = true;
+            sizeDropdown.appendChild(opt);
+        });
     }
 
-    // on load if old type exists
+    // load old values if any
     if(uniformType.value){
         populateSizes(uniformType.value);
     }
 
-    // on change
     uniformType.addEventListener('change',function(){
         populateSizes(this.value);
     });
 });
 </script>
+
 @endsection

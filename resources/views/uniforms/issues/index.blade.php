@@ -46,9 +46,7 @@
                         <table id="issue-table" class="display app-data-table default-data-table table-sm align-middle">
                             <thead>
                                 <tr>
-                                    {{-- <th>#</th> --}}
                                     <th>Issue Number</th>
-                                    {{-- <th>Issue Date</th> --}}
                                     <th>Employee</th>
                                     <th>Issued By</th>
                                     <th>Total Items</th>
@@ -60,11 +58,9 @@
                             <tbody>
                                 @foreach ($issues as $p)
                                     <tr>
-                                        {{-- <td>{{ $loop->iteration + ($issues->currentPage()-1)*$issues->perPage() }}</td> --}}
                                         <td><a href="{{ route('issues.show', $p) }}"
                                                 class="text-primary text-decoration-underline"
                                                 title="View">{{ $p->issue_number }}</a></td>
-                                        {{-- <td>{{ $p->issue_date }}</td> --}}
                                         <td>
                                             {{ optional($p->employee)->first_name ? $p->employee->first_name . ' ' . $p->employee->last_name : '-' }}
                                         </td>
@@ -90,14 +86,6 @@
                                                 class="btn btn-light-success icon-btn b-r-4" title="Edit">
                                                 <i class="ti ti-edit text-success"></i>
                                             </a>
-                                            {{-- <form action="{{ route('issues.destroy',$p) }}" method="POST" class="d-inline"
-                                                onsubmit="return confirm('Are you sure to delete this issue?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button class="btn btn-light-danger icon-btn b-r-4" title="Delete">
-                                                    <i class="ti ti-trash"></i>
-                                                </button>
-                                            </form> --}}
                                             <form action="{{ route('issues.destroy', $p) }}" method="POST"
                                                 class="d-inline delete-form">
                                                 @csrf
@@ -113,46 +101,56 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="p-2">
-                        {{ $issues->links() }}
-                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Initialize DataTable -->
+    <!-- Initialize DataTable (Show Entries + Export Excel) -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            new DataTable('#issue-table');
+            new DataTable('#issue-table', {
+                dom: '<"top"lBf>rt<"bottom"ip>',
+                lengthMenu: [
+                    [10, 25, 50, 100, -1],
+                    [10, 25, 50, 100, "All"]
+                ],
+                pageLength: 10,
+                buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        title: 'Uniform Issues List',
+                        text: '<i class="ti ti-download"></i> Export Excel',
+                        exportOptions: {
+                            // Only Issue Number, Employee, Issued By, Total Items, Grand Total, Created Date
+                            columns: [0, 1, 2, 3, 4, 5]
+                        }
+                    }
+                ]
+            });
+
+            // DELETE CONFIRMATION ALERT
+            document.querySelectorAll('.delete-form').forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault(); // prevent normal submit
+                    let formRef = this;
+
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: "This will permanently delete the issue record!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, delete it!',
+                        cancelButtonText: 'Cancel'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            formRef.submit();
+                        }
+                    });
+                });
+            });
         });
     </script>
 @endsection
-
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    // DELETE CONFIRMATION ALERT
-    document.querySelectorAll('.delete-form').forEach(form => {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault(); // prevent normal submit
-            let formRef = this;
-
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "This will permanently delete the employee record!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!',
-                cancelButtonText: 'Cancel'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // actually submit the form
-                    formRef.submit();
-                }
-            });
-        });
-    });
-});
-</script>

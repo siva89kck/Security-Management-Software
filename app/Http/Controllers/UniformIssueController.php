@@ -234,6 +234,6 @@ class UniformIssueController extends Controller
             }
         }
         $issue->delete();
-        return back()->with('success', 'Deleted');
+        return back()->with('success', 'Uniform Issue Deleted Successfully');
     }
 }

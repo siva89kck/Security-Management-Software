@@ -86,7 +86,7 @@
 
 
 <style>
-    #employees-table_wrapper .dt-buttons
+    .dataTables_wrapper .dt-buttons
     {
         float: right!important;
         padding: 1rem 1.25rem !important;

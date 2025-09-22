@@ -79,10 +79,15 @@
                                 <label class="label">Uniform Name <span class="text-danger">*</span></label>
                                 <select name="name" id="uniformType" class="form-select" required>
                                     <option value="">Select Type</option>
-                                    <option value="Shirt" {{ old('name', $master->name)=='Shirt'?'selected':'' }}>Shirt</option>
-                                    <option value="Pant" {{ old('name', $master->name)=='Pant'?'selected':'' }}>Pant</option>
-                                    <option value="Cap" {{ old('name', $master->name)=='Cap'?'selected':'' }}>Cap</option>
-                                    <option value="Shoes" {{ old('name', $master->name)=='Shoes'?'selected':'' }}>Shoes</option>
+                                    <option value="Shirt" {{ old('name', $master->name) == 'Shirt' ? 'selected' : '' }}>Shirt</option>
+                                    <option value="Shirt Full" {{ old('name', $master->name) == 'Shirt Full' ? 'selected' : '' }}>Shirt Full</option>
+                                    <option value="Shirt Half" {{ old('name', $master->name) == 'Shirt Half' ? 'selected' : '' }}>Shirt Half</option>
+                                    <option value="Short" {{ old('name', $master->name) == 'Short' ? 'selected' : '' }}>Short</option>
+                                    <option value="Pant" {{ old('name', $master->name) == 'Pant' ? 'selected' : '' }}>Pant</option>
+                                    <option value="Cap" {{ old('name', $master->name) == 'Cap' ? 'selected' : '' }}>Cap</option>
+                                    <option value="Shoes" {{ old('name', $master->name) == 'Shoes' ? 'selected' : '' }}>Shoes</option>
+                                    <option value="Shoes Black" {{ old('name', $master->name) == 'Shoes Black' ? 'selected' : '' }}>Shoes Black</option>
+                                    <option value="Shoes White" {{ old('name', $master->name) == 'Shoes White' ? 'selected' : '' }}>Shoes White</option>
                                 </select>
                                 <div class="invalid-feedback">Please select uniform name.</div>
                             </div>
@@ -145,33 +150,46 @@ document.addEventListener('DOMContentLoaded', function () {
         }, false);
     });
 
-    // size options based on type
-    const sizeOptions = {
-        Shirt: ['XS','S','M','L','XL','XXL'],
-        Pant: ['28','30','32','34','36','38','40'],
-        Cap: ['Small','Medium','Large'],
-        Shoes: ['5','6','7','8','9','10','11']
+    // 🔹 Master Size Groups
+    const sizeGroups = {
+        'shirt': ['28','30','32','34','36','38','40','42','44','46','48','50'],
+        'pant': ['28','30','32','34','36','38','40','42','44','46','48','50'],
+        'cap': ['Small','Medium','Large'],
+        'shoes': ['5','6','7','8','9','10','11']
     };
+
+    // Function that maps which type to which group
+    function getSizeArray(type){
+        const lower = type.toLowerCase();
+
+        if(lower.startsWith('shirt')) return sizeGroups['shirt'];   // Shirt, Shirt Full, Shirt Half
+        if(lower.startsWith('pant')) return sizeGroups['pant'];     // Pant variations
+        if(lower.startsWith('cap')) return sizeGroups['cap'];       // Cap variations
+        if(lower.startsWith('shoe')) return sizeGroups['shoes'];    // Shoes Black, Shoes White etc.
+
+        return []; // fallback
+    }
 
     const uniformType = document.getElementById('uniformType');
     const sizeDropdown = document.getElementById('sizeDropdown');
 
     function populateSizes(type, selectedSize = null){
         sizeDropdown.innerHTML = '<option value="">Select Size</option>';
-        if(sizeOptions[type]){
-            sizeOptions[type].forEach(function(size){
-                const opt = document.createElement('option');
-                opt.value = size;
-                opt.textContent = size;
-                if(selectedSize && selectedSize == size) opt.selected = true;
-                sizeDropdown.appendChild(opt);
-            });
-        }
+        const arr = getSizeArray(type);
+        arr.forEach(function(size){
+            const opt = document.createElement('option');
+            opt.value = size;
+            opt.textContent = size;
+            // selected logic (edit page)
+            if(selectedSize && selectedSize == size) opt.selected = true;
+            sizeDropdown.appendChild(opt);
+        });
     }
 
     // on load, populate size for existing value
+    const oldSize = "{{ old('size', $master->size) }}";
     if(uniformType.value){
-        populateSizes(uniformType.value, "{{ old('size', $master->size) }}");
+        populateSizes(uniformType.value, oldSize);
     }
 
     // on change
@@ -180,4 +198,5 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 </script>
+
 @endsection

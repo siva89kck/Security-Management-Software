@@ -83,17 +83,6 @@
                                                 class="btn btn-light-success icon-btn b-r-4" title="Edit">
                                                 <i class="ti ti-edit text-success"></i>
                                             </a>
-                                            {{-- <form action="{{ route('employees.destroy', $e) }}" method="POST"
-                                                class="d-inline"
-                                                onsubmit="return confirm('Are you sure you want to delete this employee?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-light-danger icon-btn b-r-4"
-                                                    title="Delete">
-                                                    <i class="ti ti-trash"></i>
-                                                </button>
-                                            </form> --}}
-                                            <!-- Existing Delete Form -->
                                             <form action="{{ route('employees.destroy', $e) }}" method="POST"
                                                 class="d-inline delete-form">
                                                 @csrf
@@ -102,7 +91,6 @@
                                                     <i class="ti ti-trash"></i>
                                                 </button>
                                             </form>
-
                                         </td>
                                     </tr>
                                 @endforeach
@@ -117,38 +105,42 @@
         </div>
     </div>
 
-    <!-- Initialize DataTable with Export Buttons -->
+    {{-- <!-- DataTables Buttons CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css">
+
+    <!-- DataTables Buttons JS -->
+    <script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.print.min.js"></script> --}}
+
+    <!-- Initialize DataTable with Excel Export -->
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            $('#employees-table').DataTable({
-                dom: 'Bfrtip',
-                buttons: [
-                    {
-                        extend: 'excelHtml5',
-                        title: 'Employees List',
-                        className: 'btn btn-success btn-sm'
-                    },
-                    // {
-                    //     extend: 'csvHtml5',
-                    //     title: 'Employees_List',
-                    //     className: 'btn btn-info btn-sm'
-                    // },
-                    // {
-                    //     extend: 'pdfHtml5',
-                    //     title: 'Employees_List',
-                    //     className: 'btn btn-danger btn-sm',
-                    //     orientation: 'landscape',
-                    //     pageSize: 'A4'
-                    // },
-                    // {
-                    //     extend: 'print',
-                    //     title: 'Employees List',
-                    //     className: 'btn btn-primary btn-sm'
-                    // }
-                ]
-            });
-        });
-    </script>
+document.addEventListener("DOMContentLoaded", function() {
+    new DataTable('#employees-table', {
+        // dom = length dropdown + filter + table + buttons + info + pagination
+        dom: '<"top"lBf>rt<"bottom"ip>',
+        // Entries dropdown values
+        lengthMenu: [
+            [10, 25, 50, 100, -1],  // -1 = All
+            [10, 25, 50, 100, "All"]
+        ],
+        pageLength: 10, // default 10 rows
+        buttons: [
+            {
+                extend: 'excelHtml5',
+                title: 'Employees List',
+                text: '<i class="ti ti-download"></i> Export Excel',
+                exportOptions: {
+                    // Actions column skip
+                    columns: [0,1,2,3,4,5]
+                }
+            }
+        ]
+    });
+});
+</script>
+
 @endsection
 
 <script>
@@ -157,9 +149,8 @@ document.addEventListener("DOMContentLoaded", function() {
         button.addEventListener("click", function() {
             let id = this.dataset.id;
             let btn = this;
-            let currentStatus = btn.textContent.trim().toLowerCase(); // active / inactive
+            let currentStatus = btn.textContent.trim().toLowerCase();
 
-            // Confirmation popup
             Swal.fire({
                 title: currentStatus === 'active' ? 'Make Inactive?' : 'Make Active?',
                 text: `Are you sure you want to change this employee status to ${currentStatus === 'active' ? 'Inactive' : 'Active'}?`,
@@ -170,7 +161,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 confirmButtonText: 'Yes, change it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Only if user confirmed → send request
                     fetch(`/employees/${id}/toggle-status`, {
                             method: "PATCH",
                             headers: {
@@ -214,12 +204,13 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 </script>
+
 <script>
 document.addEventListener("DOMContentLoaded", function() {
     // DELETE CONFIRMATION ALERT
     document.querySelectorAll('.delete-form').forEach(form => {
         form.addEventListener('submit', function(e) {
-            e.preventDefault(); // prevent normal submit
+            e.preventDefault();
             let formRef = this;
 
             Swal.fire({
@@ -233,7 +224,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 cancelButtonText: 'Cancel'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // actually submit the form
                     formRef.submit();
                 }
             });
@@ -241,5 +231,3 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 </script>
-
-

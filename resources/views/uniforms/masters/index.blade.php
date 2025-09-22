@@ -46,19 +46,17 @@
                         <table id="uniforms-table" class="display app-data-table default-data-table table-sm align-middle">
                             <thead>
                                 <tr>
-                                    {{-- <th>#</th> --}}
                                     <th>Uniform Name</th>
                                     <th>Size</th>
                                     <th>Price</th>
                                     <th>Remaining</th>
-                                    {{-- <th>Status</th> --}}
+                                    <th>Created Date</th>
                                     <th class="text-center">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($masters as $m)
                                     <tr>
-                                        {{-- <td>{{ $m->id }}</td> --}}
                                         <td>
                                             <a href="{{ route('masters.show', $m) }}"
                                                 class="text-primary text-decoration-underline" title="View">
@@ -67,13 +65,7 @@
                                         <td>{{ $m->size }}</td>
                                         <td>{{ $m->price }}</td>
                                         <td>{{ optional($m->stock)->remaining_stock ?? 0 }}</td>
-                                        {{-- <td>
-                                            <button
-                                                class="btn btn-sm status-btn w-100 {{ $m->status == 'active' ? 'btn-success' : 'btn-danger' }}"
-                                                data-id="{{ $m->id }}">
-                                                {{ ucfirst($m->status) }}
-                                            </button>
-                                        </td> --}}
+                                        <td>{{ $m->created_at->format('Y-m-d') }}</td>
                                         <td class="text-center">
                                             <a href="{{ route('masters.show', $m) }}"
                                                 class="btn btn-light-info icon-btn b-r-4" title="View">
@@ -92,16 +84,6 @@
                                                     <i class="ti ti-trash"></i>
                                                 </button>
                                             </form>
-                                            {{-- <form action="{{ route('masters.destroy', $m) }}" method="POST"
-                                                class="d-inline"
-                                                onsubmit="return confirm('Are you sure you want to delete this uniform?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-light-danger icon-btn b-r-4"
-                                                    title="Delete">
-                                                    <i class="ti ti-trash"></i>
-                                                </button>
-                                            </form> --}}
                                         </td>
                                     </tr>
                                 @endforeach
@@ -116,15 +98,47 @@
         </div>
     </div>
 
-    <!-- Initialize DataTable -->
+    {{-- <!-- DataTables Buttons CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css">
+
+    <!-- DataTables Buttons JS -->
+    <script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.print.min.js"></script> --}}
+
+    <!-- Initialize DataTable with Excel Export -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            new DataTable('#uniforms-table');
+            new DataTable('#uniforms-table', {
+                //dom: 'Bfrtip', // Buttons + search + table
+                // dom = length dropdown + filter + table + buttons + info + pagination
+        dom: '<"top"lBf>rt<"bottom"ip>',
+        // Entries dropdown values
+        lengthMenu: [
+            [10, 25, 50, 100, -1],  // -1 = All
+            [10, 25, 50, 100, "All"]
+        ],
+        pageLength: 10, // default 10 rows
+                buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        title: 'Uniforms List',
+                        text: '<i class="ti ti-download"></i> Export Excel',
+                        exportOptions: {
+                            // Uniform Name, Size, Price, Remaining only (Actions skip)
+                            columns: [0, 1, 2, 3, 4]
+                        }
+                    }
+                ]
+            });
         });
     </script>
+
 @endsection
 
 <script>
+    // STATUS CHANGE (if any)
     document.addEventListener("DOMContentLoaded", function() {
         document.querySelectorAll(".status-btn").forEach(button => {
             button.addEventListener("click", function() {
@@ -174,6 +188,7 @@
         });
     });
 </script>
+
 <script>
 document.addEventListener("DOMContentLoaded", function() {
     // DELETE CONFIRMATION ALERT

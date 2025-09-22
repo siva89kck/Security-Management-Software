@@ -75,6 +75,6 @@ class UniformMasterController extends Controller
     public function destroy(UniformMaster $master)
     {
         $master->delete();
-        return back()->with('success', 'Deleted');
+        return back()->with('success', 'Uniform Name Deleted Successfully');
     }
 }

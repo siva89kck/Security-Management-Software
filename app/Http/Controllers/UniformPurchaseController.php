@@ -123,6 +123,6 @@ class UniformPurchaseController extends Controller
             }
         }
         $purchase->delete();
-        return back()->with('success','Deleted');
+        return back()->with('success','Uniform Stock Deleted Successfully');
     }
 }
